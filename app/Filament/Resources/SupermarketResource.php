@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SupermarketResource\Pages;
 use App\Filament\Resources\SupermarketResource\RelationManagers;
 use App\Models\supermarket;
+use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -30,27 +31,58 @@ class SupermarketResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Supermarket Details')->description('Add SuperMarket Details')->schema([
-                    TextInput::make("name")->required(),
-                    TextInput::make('street_name')->required(),
-                    TextInput::make('state')->required(),
-                ]),
+                Section::make('Supermarket Details')
+                    ->schema([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(20),
+                    ]),
+
+                Section::make('Location Details')
+                    ->schema([
+                        TextInput::make('location.street_name')
+                            ->required()
+                            ->maxLength(30)
+                            ->label('Street Name'),
+
+                        TextInput::make('location.state')
+                            ->required()
+                            ->maxLength(20)
+                            ->label('State'),
+
+                        TextInput::make('location.latitude')
+                            ->disabled()
+                            ->dehydrated()
+                            ->label('Latitude'),
+
+                        TextInput::make('location.longitude')
+                            ->disabled()
+                            ->dehydrated()
+                            ->label('Longitude'),
+                    ]),
             ]);
     }
+
+    private static function fetchcordinates() {}
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
-                TextColumn::make('location.street_name'),
-                TextColumn::make('location.state'),
+                TextColumn::make('name'),
+                TextColumn::make('location.street_name')
+                    ->label('Street Name'),
+                TextColumn::make('location.state')
+                    ->label('State'),
+                TextColumn::make('created_at')
+                    ->dateTime(),
             ])
             ->filters([
                 SelectFilter::make('state')->relationship('location', 'state'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -73,5 +105,10 @@ class SupermarketResource extends Resource
             'create' => Pages\CreateSupermarket::route('/create'),
             'edit' => Pages\EditSupermarket::route('/{record}/edit'),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

@@ -9,8 +9,11 @@ class location extends Model
 {
     protected $table = 'locations';
     protected $fillable = [
+        'supermarket_id',
         'street_name',
         'state',
+        'latitude',
+        'longitude'
     ];
 
     public function supermarket(): BelongsTo
