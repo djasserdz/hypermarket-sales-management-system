@@ -24,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -50,6 +51,6 @@ class User extends Authenticatable
 
     public function cashRegister(): BelongsToMany
     {
-        return $this->belongsToMany(cashRegister::class, 'shifts', 'user_id', 'cash_register_id');
+        return $this->belongsToMany(cashRegister::class, 'shifts', 'user_id', 'cash_register_id')->withPivot('start_at', 'end_at');
     }
 }

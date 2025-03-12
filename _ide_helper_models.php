@@ -18,7 +18,7 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string|null $email
- * @property string $role
+ * @property string|null $role
  * @property string|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token

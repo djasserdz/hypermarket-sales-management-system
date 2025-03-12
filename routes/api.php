@@ -10,7 +10,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-
-Route::get('/zbi', function () {
-    return 'ya no9sh';
-})->middleware(Authenticationmiddleware::class);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware(Authenticationmiddleware::class);

@@ -23,7 +23,7 @@ class cashRegister extends Model
 
     public function user(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'shifts', 'cash_register_id', 'user_id');
+        return $this->belongsToMany(User::class, 'shifts', 'cash_register_id', 'user_id')->withPivot('start_at', 'end_at');
     }
 
     public function supermarket(): BelongsTo
