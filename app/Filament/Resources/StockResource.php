@@ -6,6 +6,9 @@ use App\Filament\Resources\StockResource\Pages;
 use App\Filament\Resources\StockResource\RelationManagers;
 use App\Models\stock;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -29,7 +32,11 @@ class StockResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Section::make('Stock Informations')->description('Add the Product Supermarket and Quantity')->schema([
+                    Select::make('supermarket_id')->relationship('supermarket', 'name')->searchable()->required()->preload(),
+                    Select::make('product_id')->relationship('product', 'name')->searchable()->required()->preload(),
+                    TextInput::make('quantity')->required()->numeric(),
+                ])
             ]);
     }
 

@@ -135,6 +135,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\categorie $categorie
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\stock> $stock
+ * @property-read int|null $stock_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\supermarket> $supermarket
  * @property-read int|null $supermarket_count
  * @property-read \App\Models\supplier $supplier
