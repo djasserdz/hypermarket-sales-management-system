@@ -8,7 +8,8 @@ The **Hypermarket Sales Management System** is designed to manage **inventory, s
 - **Stock Movements:** Allows stock transfers between supermarkets and reorders from suppliers.
 - **Supermarket Network Management:** Each supermarket connects to a central hypermarket server that oversees all operations.
 - **Cash Register Management:** Handles cash transactions and tracks cash register activity.
-- **Automated Stock Replenishment:** Checks stock availability in nearby supermarkets and places orders if necessary.
+- **Automated Stock Replenishment:** Checks stock availability in nearby supermarkets and places orders if necessary
+
 
 # Use Case Descriptions
 
