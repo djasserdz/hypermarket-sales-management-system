@@ -7,6 +7,7 @@ use App\Models\product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class CashierController extends Controller
 {
@@ -41,7 +42,7 @@ class CashierController extends Controller
 
     public function generate_ticket(Request $request)
     {
-        $validated = Validator::make($request->all(), [
+        $validated = Validator::make($request->only('payment_method','products'), [
             'payment_method' => ['required'],
             'products' => ['required', 'array'],
             'products.*.id' => ['required', 'exists:products,id'],
@@ -60,7 +61,7 @@ class CashierController extends Controller
         if (!$cashRegister) {
             return response()->json([
                 'error' => 'You are not assigned to a cash register. Please login.',
-            ], 403);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         $supermarket_id = $cashRegister->supermarket_id;

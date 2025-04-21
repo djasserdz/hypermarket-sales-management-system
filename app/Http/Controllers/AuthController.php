@@ -7,46 +7,52 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
-    {
-        $validation = Validator::make($request->only(['password', 'cash_register_id', 'email']), [
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-            'cash_register_id' => ['required'],
-        ]);
+{
+    $validation = Validator::make($request->only(['password', 'cash_register_id', 'name']), [
+        'name' => ['required', 'string'],
+        'password' => ['required'],
+        'cash_register_id' => ['required'],
+    ]);
 
-        if ($validation->fails()) {
-            return response()->json([
-                'errors' => $validation->errors(),
-            ]);
-        }
-        $user = User::where('email', $request->input('email'))->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Credientals does not match our records']);
-        }
-        $cash_register = cashRegister::find($request->cash_register_id);
-        if (!$cash_register) {
-            return response()->json(['error' => 'cash register not found']);
-        }
-
-
-
-
-        $token = $user->createToken($user->id)->plainTextToken;
-
-
-        $user->cashRegister()->attach($request->input('cash_register_id'), ["start_at" => now()]);
-
+    if ($validation->fails()) {
         return response()->json([
-            'message' => 'User logged in!',
-            'token' => $token,
-        ]);
+            'errors' => $validation->errors(),
+        ],Response::HTTP_BAD_REQUEST);
     }
+    $user = User::where('name', $request->input('name'))->first();
+
+    
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['error' => 'Credentials do not match our records'],Response::HTTP_UNAUTHORIZED);
+    }
+    
+    $cash_register = cashRegister::find($request->cash_register_id);
+    if (!$cash_register) {
+        return response()->json(['error' => 'Cash register not found']);
+    }
+    
+   
+    $existingShift = $cash_register->users()->whereNull('end_at')->first();
+    if ($existingShift) {
+        return response()->json(['error' => 'This cash register is already in use']);
+    }
+
+    $token = $user->createToken($user->id)->plainTextToken;
+
+    
+    $user->cashRegister()->attach($request->input('cash_register_id'), ['start_at' => now()]);
+
+    return response()->json([
+        'message' => 'User logged in!',
+        'token' => $token,
+    ]);
+}
+
 
     public function logout(Request $request)
     {

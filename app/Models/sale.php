@@ -26,5 +26,22 @@ class sale extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(product::class, 'sale_items', 'sale_id', 'product_id')->withPivot('quantity');
+    } 
+    public function cashierAtTimeOfSale()
+    {
+    if (!$this->cashRegister) {
+        return null; 
     }
+
+    return $this->cashRegister
+        ->users()
+        ->wherePivot('start_at', '<=', $this->created_at)
+        ->where(function ($query) {
+            $query->wherePivot('end_at', '>=', $this->created_at)
+                  ->orWhereNull('end_at');
+        })
+        ->first();
+    }
+
+
 }

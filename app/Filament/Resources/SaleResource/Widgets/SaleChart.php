@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\sale;
 use Filament\Widgets\ChartWidget;
-use App\Models\Sale;
 use Illuminate\Support\Facades\DB;
 
 class SaleChart extends ChartWidget
@@ -16,7 +16,7 @@ class SaleChart extends ChartWidget
     protected function getData(): array
     {
 
-        $salesData = Sale::selectRaw('DATE(sales.created_at) as date, SUM(sale_items.quantity * products.price) as total_sales')
+        $salesData = sale::selectRaw('DATE(sales.created_at) as date, SUM(sale_items.quantity * products.price) as total_sales')
             ->join('sale_items', 'sales.id', '=', 'sale_items.sale_id')
             ->join('products', 'products.id', '=', 'sale_items.product_id')
             ->where('sales.created_at', '>=', now()->subDays(7))

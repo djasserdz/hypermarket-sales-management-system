@@ -5,9 +5,11 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SupermarketResource\Pages;
 use App\Filament\Resources\SupermarketResource\RelationManagers;
 use App\Models\supermarket;
+use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -36,8 +38,15 @@ class SupermarketResource extends Resource
                         TextInput::make('name')
                             ->required()
                             ->maxLength(20),
+                        Select::make('manager_id')
+                        ->label('manager')
+                        ->options(
+                            User::where('role','manager')->pluck('name','id')
+                        )
+                        ->searchable()
+                        ->preload()
+                        ->required()
                     ]),
-
                 Section::make('Location Details')
                     ->schema([
                         TextInput::make('location.street_name')
@@ -70,6 +79,8 @@ class SupermarketResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
+                TextColumn::make('manager.name')
+                ->label('Manager'),
                 TextColumn::make('location.street_name')
                     ->label('Street Name'),
                 TextColumn::make('location.state')

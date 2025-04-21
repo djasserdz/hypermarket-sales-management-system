@@ -21,7 +21,7 @@ class cashRegister extends Model
 
 
 
-    public function user(): BelongsToMany
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'shifts', 'cash_register_id', 'user_id')->withPivot('start_at', 'end_at');
     }
@@ -34,4 +34,8 @@ class cashRegister extends Model
     {
         return $this->hasMany(sale::class, 'cash_register_id');
     }
+    public function user():BelongsTo{
+        return $this->belongsTo(User::class);
+    }
+
 }

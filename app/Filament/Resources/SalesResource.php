@@ -36,7 +36,12 @@ class SalesResource extends Resource
             ->columns([
                 TextColumn::make('id')->label('Sale ID'),
                 TextColumn::make('cashRegister.id')->label('Cash Register'),
-                TextColumn::make('cashRegister.user.name')->label('CashRegister User'),
+                TextColumn::make('cashier_name')
+                ->label('Sold By')
+                ->getStateUsing(function ($record) {
+        return optional($record->cashierAtTimeOfSale())->name ?? '—';
+    }),
+
                 TextColumn::make('created_at'),
             ])
             ->filters([
