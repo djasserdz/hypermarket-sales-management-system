@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\cashRegister;
+use App\Models\shift;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,21 +60,24 @@ class AuthController extends Controller
 }
 
 
-    public function logout(Request $request)
-    {
-        $user = $request->user();
-        $latestshift = $user->cashRegister()->withPivot('start_at', 'end_at')->orderByDesc('shifts.start_at')->first();
+public function logout(Request $request) {
+    $user = $request->user();
+         
+    $latestShift=shift::where('user_id',$user->id)->where('end_at',null)->first();
 
-        if ($latestshift) {
-            $user->cashRegister()->updateExistingPivot($latestshift->id, [
-                'end_at' => now(),
-            ]);
-        }
-
-        $user->tokens()->delete();
-
-        return response()->json([
-            'message' => 'User logged out!',
-        ]);
+    if ($latestShift) {
+      DB::table('shifts')
+      ->where('id',$latestShift->id)
+      ->limit(1)
+      ->update(['end_at'=>now()]);
     }
+    
+    
+     $user->tokens()->delete();
+    
+    return response()->json([
+        'message' => 'User logged out!',
+    ]);
+}
+
 }

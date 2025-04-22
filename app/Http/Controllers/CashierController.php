@@ -23,7 +23,7 @@ class CashierController extends Controller
         if ($validated->fails()) {
             return response()->json([
                 'error' => $validated->errors(),
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $search = $request->search;
@@ -61,7 +61,7 @@ class CashierController extends Controller
         if ($validated->fails()) {
             return response()->json([
                 'error' => $validated->errors(),
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user = $request->user();
