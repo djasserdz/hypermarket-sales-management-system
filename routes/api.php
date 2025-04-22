@@ -17,6 +17,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(Authenticationmiddleware::class)->group(function(){
 
+    Route::get('/user',[AuthController::class,'get_user']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::middleware(IsCashierMiddleware::class)->group(function(){

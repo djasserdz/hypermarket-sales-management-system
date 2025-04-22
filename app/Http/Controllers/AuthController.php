@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Filament\Resources\UserResource;
+use App\Http\Resources\User as ResourcesUser;
 use App\Models\cashRegister;
 use App\Models\shift;
 use App\Models\User;
@@ -79,5 +81,17 @@ public function logout(Request $request) {
         'message' => 'User logged out!',
     ]);
 }
+ public function get_user(Request $request){
+    $user=$request->user();
+    if(!$user){
+        return response()->json([
+            'error'=>"User not found!"
+        ],Response::HTTP_NOT_FOUND);
+    }
+
+    return response()->json([
+        'user'=>new ResourcesUser($user)
+    ],Response::HTTP_OK);
+ }
 
 }
