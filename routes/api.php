@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CashierController;
 use App\Http\Controllers\ManagerController;
 use App\Http\Middleware\Authenticationmiddleware;
+use App\Http\Middleware\IsCashierMiddleware;
 use App\Http\Middleware\IsManagermiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,13 +14,25 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware(Authenticationmiddleware::class);
 
-Route::post('/search', [CashierController::class, 'search']);
-Route::post('/ticket', [CashierController::class, 'generate_ticket'])->middleware(Authenticationmiddleware::class);
+Route::middleware(Authenticationmiddleware::class)->group(function(){
 
-Route::post('/user/addCacheRegister', [ManagerController::class, 'AddCacheRegister'])->middleware(IsManagermiddleware::class);
-Route::post('/user/addCachier', [ManagerController::class, 'AddCachier'])->middleware(IsManagermiddleware::class);
-Route::get('/user/cashiers', [ManagerController::class, 'showAllCashiers'])->middleware(IsManagermiddleware::class);
-Route::delete('/user/cashiers/{id}', [ManagerController::class, 'deleteCashier'])->middleware(IsManagermiddleware::class);
-Route::put('/user/cashiers/{id}', [ManagerController::class, 'editCashier'])->middleware(IsManagermiddleware::class);
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::middleware(IsCashierMiddleware::class)->group(function(){
+        
+        Route::post('/search', [CashierController::class, 'search']);
+        Route::post('/ticket', [CashierController::class, 'generate_ticket']);
+    });
+    
+    
+    Route::middleware(IsManagermiddleware::class)->group(function(){
+        Route::post('/user/addCacheRegister', [ManagerController::class, 'AddCacheRegister']);
+        Route::post('/user/addCachier', [ManagerController::class, 'AddCachier']);
+        Route::get('/user/cashiers', [ManagerController::class, 'showAllCashiers']);
+        Route::delete('/user/cashiers/{id}', [ManagerController::class, 'deleteCashier']);
+        Route::put('/user/cashiers/{id}', [ManagerController::class, 'editCashier']);
+    });
+});
+
+

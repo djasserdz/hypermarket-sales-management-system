@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
+use Symfony\Component\HttpFoundation\Response;
 
 class ManagerController extends Controller
 {
@@ -17,16 +19,14 @@ class ManagerController extends Controller
      */
     public function AddCacheRegister(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only('supermarket_id'), [
             'supermarket_id' => 'required|exists:supermarkets,id'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
                 'errors' => $validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $cashRegister = CashRegister::create([
@@ -34,10 +34,9 @@ class ManagerController extends Controller
         ]);
 
         return response()->json([
-            'status' => true,
             'message' => 'Cash register added successfully',
             'data' => $cashRegister
-        ]);
+        ],Response::HTTP_CREATED);
     }
 
     /**
@@ -46,21 +45,17 @@ class ManagerController extends Controller
      */
     public function AddCachier(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only('name','email','password','cash_register_id'), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/',
+            'password' => ['required','string',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
             'cash_register_id' => 'required|exists:cash_registers,id'
-        ], [
-            'password.regex' => 'Password must contain at least one uppercase letter, one number and one special character'
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
                 'errors' => $validator->errors()
-            ], 422);
+            ],Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $cashier = User::create([
@@ -77,28 +72,28 @@ class ManagerController extends Controller
         ]);
 
         return response()->json([
-            'status' => true,
             'message' => 'Cashier added successfully',
             'data' => $cashier->load('cashRegisters')
-        ]);
+        ],Response::HTTP_OK);
     }
 
     /**
      * Get all cashiers with their cash registers
      * GET /user/cashiers
      */
-    public function showAllCashiers()
+    public function showAllCashiers($supermarket_id)
     {
         $cashiers = User::where('role', 'cashier')
-                      ->with(['cashRegisters' => function($query) {
-                          $query->with('supermarket');
-                      }])
-                      ->get();
+                    ->whereHas('cashRegisters', function($query) use ($supermarket_id) {
+                        $query->where('supermarket_id', $supermarket_id);
+                    })
+                    ->with('cashRegisters')
+                    ->get();
 
         return response()->json([
             'status' => true,
             'data' => $cashiers
-        ]);
+        ],Response::HTTP_OK);
     }
 
     /**
@@ -111,9 +106,8 @@ class ManagerController extends Controller
 
         if (!$cashier) {
             return response()->json([
-                'status' => false,
                 'message' => 'Cashier not found'
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
 
         // Remove from shifts table first
@@ -141,24 +135,19 @@ class ManagerController extends Controller
             ], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,'.$id,
-            'password' => 'sometimes|string|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]+$/',
-            'cash_register_id' => 'sometimes|exists:cash_registers,id'
-        ], [
-            'password.regex' => 'Password must contain at least one uppercase letter, one number and one special character'
+        $validator = Validator::make($request->only('name','email','password'), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => ['required','string',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => false,
-                'message' => 'Validation error',
                 'errors' => $validator->errors()
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $updateData = $request->only(['name', 'email']);
+        $updateData = $request->only(['name', 'email','password']);
         
         if ($request->has('password')) {
             $updateData['password'] = Hash::make($request->password);
@@ -166,19 +155,10 @@ class ManagerController extends Controller
 
         $cashier->update($updateData);
 
-        // Update cash register assignment if provided
-        if ($request->has('cash_register_id')) {
-            $cashier->cashRegisters()->sync([$request->cash_register_id => [
-                'start_at' => now(),
-                'end_at' => null
-            ]]);
-        }
-
+    
         return response()->json([
-            'status' => true,
             'message' => 'Cashier updated successfully',
-            'data' => $cashier->load('cashRegisters')
-        ]);
+        ],Response::HTTP_OK);
     }
 }
 

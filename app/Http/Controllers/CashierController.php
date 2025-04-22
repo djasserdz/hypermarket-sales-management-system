@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Filament\Resources\ProductResource;
 use App\Http\Resources\product as ResourcesProduct;
+use App\Http\Resources\ProductResource as ResourcesProductResource;
 use App\Models\product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +28,15 @@ class CashierController extends Controller
 
         $search = $request->search;
 
-        $product = product::where('name', 'LIKE', "%$search%")
-            ->orWhere('barcode', 'LIKE', "%$search%")
-            ->first();
+   
+        $cacheKey = "product_search:" . md5($search);
+
+           
+        $product = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($search) {
+                return product::where('name', 'LIKE', "%$search%")
+                    ->orWhere('barcode', 'LIKE', "%$search%")
+                    ->first();
+        });
 
         if (!$product) {
             return response()->json([
@@ -36,7 +45,7 @@ class CashierController extends Controller
         }
 
         return response()->json([
-            'product' => new ResourcesProduct($product),
+            'product' => new ResourcesProductResource($product)
         ]);
     }
 
