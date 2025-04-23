@@ -74,7 +74,6 @@ public function logout(Request $request) {
       ->update(['end_at'=>now()]);
     }
     
-    
      $user->tokens()->delete();
     
     return response()->json([
