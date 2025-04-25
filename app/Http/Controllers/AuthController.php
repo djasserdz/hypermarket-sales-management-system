@@ -44,7 +44,7 @@ class AuthController extends Controller
        
         $existingShift = $cash_register->users()->whereNull('end_at')->first();
         if ($existingShift) {
-            return response()->json(['error' => 'This cash register is already in use']);
+            return response()->json(['error' => 'This cash register is already in use'],Response::HTTP_UNAUTHORIZED);
         }
     
         $user->cashRegister()->attach($request->input('cash_register_id'), ['start_at' => now()]);
