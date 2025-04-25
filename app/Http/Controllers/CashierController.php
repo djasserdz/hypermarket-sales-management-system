@@ -36,8 +36,7 @@ class CashierController extends Controller
            
         $product = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($search) {
                 return product::where('name', 'LIKE', "%$search%")
-                    ->orWhere('barcode', 'LIKE', "%$search%")
-                    ->first();
+                    ->orWhere('barcode', 'LIKE', "%$search%")->get();
         });
 
         if (!$product) {
@@ -47,7 +46,7 @@ class CashierController extends Controller
         }
 
         return response()->json([
-            'product' => new ResourcesProductResource($product)
+            'products' =>  ResourcesProductResource::collection($product)
         ]);
     }
 
