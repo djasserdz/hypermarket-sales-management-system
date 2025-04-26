@@ -29,6 +29,7 @@ class TransfersResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id'),
                 TextColumn::make("product.name")->label("Product Name"),
                 TextColumn::make("fromSupermarket.name")->label("From Supermarket"),
                 TextColumn::make("toSupermarket.name")->label("Destination Supermarket"),

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-
+use Filament\Facades\Filament;
 class AuthController extends Controller
 {
     public function login(Request $request)
@@ -29,6 +29,7 @@ class AuthController extends Controller
         ],Response::HTTP_BAD_REQUEST);
     }
     $user = User::where('name', $request->input('name'))->first();
+    
 
     
     if (!$user || !Hash::check($request->password, $user->password)) {
@@ -92,5 +93,6 @@ public function logout(Request $request) {
         'user'=>new ResourcesUser($user)
     ],Response::HTTP_OK);
  }
+
 
 }
