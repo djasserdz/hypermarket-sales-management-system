@@ -48,10 +48,10 @@ class Transfers extends Model
     }
     public function fromSupermarket(): BelongsTo
     {
-        return $this->belongsTo(Supermarket::class, 'from_supermarket');
+        return $this->belongsTo(supermarket::class, 'from_supermarket');
     }
 
       public function toSupermarket(): BelongsTo{
-         return $this->belongsTo(Supermarket::class, 'to_supermarket');
+         return $this->belongsTo(supermarket::class, 'to_supermarket');
     }
 }

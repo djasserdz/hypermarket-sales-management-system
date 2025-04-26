@@ -67,7 +67,7 @@ class ShortestPathService
         }
         
         // Create edges between supermarkets with a maximum distance threshold
-        $maxDistanceThreshold = 1000; // Maximum distance in km to consider
+        $maxDistanceThreshold = 60000; // Maximum distance in km to consider
         $ids = $supermarkets->pluck('id')->values();
         
         for ($i = 0; $i < count($ids); $i++) {
