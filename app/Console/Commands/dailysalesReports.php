@@ -4,11 +4,15 @@ namespace App\Console\Commands;
 
 use App\Mail\DailySalesReport;
 use App\Models\sale;
+use App\Models\SaleReport;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 
 class dailysalesReports extends Command 
 {
@@ -46,5 +50,17 @@ class dailysalesReports extends Command
         Mail::to($emailRecipients)->send(new DailySalesReport($report));
 
         $this->info("Daily sales report sent via email");
+
+        $filename = 'daily-sales-' . now()->format('Y-m-d') . '-' . Str::random(6) . '.json';
+        $filePath = 'reports/' . $filename;
+
+        Storage::put($filePath, json_encode($report, JSON_PRETTY_PRINT));
+
+        SaleReport::create([
+            'file_path' => $filePath,
+            'report_date' => today(),
+        ]);
+
+        $this->info("Daily sales report saved to storage and database.");
     }
 }

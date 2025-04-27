@@ -45,6 +45,7 @@ class CategoriesResource extends Resource
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+            ->defaultSort("created_at","desc")
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

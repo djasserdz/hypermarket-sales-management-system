@@ -42,8 +42,9 @@ class SalesResource extends Resource
         return optional($record->cashierAtTimeOfSale())->name ?? '—';
     }),
 
-                TextColumn::make('created_at')->sortable(),
+                TextColumn::make('created_at'),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 //
             ])

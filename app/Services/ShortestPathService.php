@@ -118,7 +118,6 @@ class ShortestPathService
                     $pathVertices = [$fromSupermarketId, $target->id];
                 }
             } catch (\Exception $e) {
-                // Skip unreachable supermarkets
                 continue;
             }
         }
@@ -132,7 +131,6 @@ class ShortestPathService
             ];
         }
         
-        // Create transfer record in database
         try {
             DB::beginTransaction();
             

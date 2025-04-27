@@ -16,7 +16,10 @@ class TransfersResource extends Resource
 {
     protected static ?string $model = Transfers::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
+
+    protected static ?string $navigationGroup = 'Stock Management';
+
 
     public static function form(Form $form): Form
     {
@@ -36,6 +39,7 @@ class TransfersResource extends Resource
                 TextColumn::make("quantity")->label("Quantity"),
                 TextColumn::make("status")->label("Status"),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 //
             ])
