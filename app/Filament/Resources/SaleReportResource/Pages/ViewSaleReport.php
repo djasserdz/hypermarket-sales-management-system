@@ -18,7 +18,9 @@ class ViewSaleReport extends Page
     {
         $this->record = $record;
 
-        $content = Storage::get($record->file_path);
+
+
+        $content = Storage::disk("public")->get($record->file_path);
 
         $this->reportContent = json_decode($content, true) ?? [];
     }

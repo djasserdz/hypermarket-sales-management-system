@@ -38,7 +38,7 @@ class SaleReportResource extends Resource
             Tables\Columns\TextColumn::make('report_date')->label('Report Date'),
             Tables\Columns\TextColumn::make('file_path')
                 ->label('Download')
-                ->url(fn (SaleReport $record) => Storage::url($record->file_path))
+                ->url(fn ($record) => Storage::disk('public')->url($record->file_path))
                 ->openUrlInNewTab()
                 ->copyable(),
             Tables\Columns\TextColumn::make('created_at')->since(),
@@ -49,7 +49,6 @@ class SaleReportResource extends Resource
             Tables\Actions\Action::make('View')
                 ->label('View Report')
                 ->url(fn (SaleReport $record) => SaleReportResource::getUrl('view', ['record' => $record]))
-                ->openUrlInNewTab(),
         ])
         ->bulkActions([]);
     }

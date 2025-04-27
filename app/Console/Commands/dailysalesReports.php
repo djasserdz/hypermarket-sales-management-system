@@ -51,11 +51,14 @@ class dailysalesReports extends Command
 
         $this->info("Daily sales report sent via email");
 
-        $filename = 'daily-sales-' . now()->format('Y-m-d') . '-' . Str::random(6) . '.json';
-        $filePath = 'reports/' . $filename;
-
-        Storage::put($filePath, json_encode($report, JSON_PRETTY_PRINT));
-
+        $today_file = now()->format('Y-m-d');
+        $filename = 'daily-sales-' . $today_file . '.json';
+        $filePath = "Daily-report/{$today_file}/" . $filename;
+        
+        Storage::disk('public')->makeDirectory("Daily-report/{$today_file}", 0755);
+        
+        Storage::disk('public')->put($filePath, json_encode($report, JSON_PRETTY_PRINT));
+        
         SaleReport::create([
             'file_path' => $filePath,
             'report_date' => today(),

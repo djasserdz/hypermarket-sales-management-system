@@ -88,6 +88,7 @@ class SupermarketResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime(),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 SelectFilter::make('state')->relationship('location', 'state'),
             ])
