@@ -42,6 +42,7 @@ class SuppliersResource extends Resource
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('phone_number'),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 //
             ])

@@ -65,6 +65,7 @@ class UserResource extends Resource
                 TextColumn::make('role')->badge(),
                 TextColumn::make('created_at'),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 SelectFilter::make('role')->options([
                     'Admin' => 'Admin',

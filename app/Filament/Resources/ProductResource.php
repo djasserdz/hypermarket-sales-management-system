@@ -53,6 +53,7 @@ class ProductResource extends Resource
                 TextColumn::make('categorie.name'),
                 TextColumn::make('supplier.name'),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 SelectFilter::make('category')->relationship('categorie', 'name'),
                 SelectFilter::make('supplier')->relationship('supplier', 'name'),

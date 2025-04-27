@@ -48,6 +48,7 @@ class StockResource extends Resource
                 TextColumn::make('supermarket.name'),
                 TextColumn::make('quantity'),
             ])
+            ->defaultSort("created_at","desc")
             ->filters([
                 SelectFilter::make('product')->relationship('product', 'name'),
                 SelectFilter::make('supermarket')->relationship('supermarket', 'name'),
