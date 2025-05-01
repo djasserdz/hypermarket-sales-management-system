@@ -316,3 +316,248 @@ This endpoint is for making a purchase
 }
 
 ```
+
+
+## Endpoint: `/user/addCacheRegister`
+
+This endpoint is for Creating a new CashRegister
+
+### Request
+
+#### HTTP Method
+`POST`
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| supermarket_id | integer  | yes | SUpermarket id |
+
+#### Headers
+
+| Header | Value | Required | Description |
+|--------|-------|----------|-------------|
+| Accept | application/json | Yes | Specifies the response format |
+|Authorization|Bearer {token}|Yes|Authentication token|
+
+### Response
+
+#### Success Response (200 OK)
+
+```json
+{
+    "message": "Cash register added successfully",
+    "data": {
+        "supermarket_id": "1",
+        "updated_at": "2025-05-01T22:30:04.000000Z",
+        "created_at": "2025-05-01T22:30:04.000000Z",
+        "id": 3
+    }
+}
+```
+
+## Error Responses
+
+**validation Errors**
+
+```json
+{
+
+    
+    "errors": {
+        "supermarket_id": [
+            "The supermarket id field is required."
+        ]
+    
+             }
+}
+
+```
+
+
+## Endpoint: `/user/addCachier`
+
+This endpoint is for Creating a new cashier
+
+### Request
+
+#### HTTP Method
+`POST`
+
+#### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| name | String  | yes | name of the employee |
+| email | string | yes | email of the employee|
+|passsword | String | yes | password |
+
+#### Headers
+
+| Header | Value | Required | Description |
+|--------|-------|----------|-------------|
+| Accept | application/json | Yes | Specifies the response format |
+|Authorization|Bearer {token}|Yes|Authentication token|
+
+### Response
+
+#### Success Response (200 OK)
+
+```json
+{
+    "message": "Cashier added successfully"
+}
+```
+
+## Error Responses
+
+**validation Errors**
+
+```json
+{
+    "errors": {
+        "name": [
+            "The name field is required."
+        ],
+        "email": [
+            "The email field is required."
+        ],
+        "password": [
+            "The password field is required."
+        ]
+    }
+}
+```
+
+## Endpoint: `/user/cashiers`
+
+This endpoint is for Creating a new cashier
+
+### Request
+
+#### HTTP Method
+`POST`
+
+#### Headers
+
+| Header | Value | Required | Description |
+|--------|-------|----------|-------------|
+| Accept | application/json | Yes | Specifies the response format |
+|Authorization|Bearer {token}|Yes|Authentication token|
+
+### Response
+
+#### Success Response (200 OK)
+
+```json
+{
+    "Cashiers": [
+        {
+            "id": 6,
+            "name": "dj"
+        }
+    ]
+}
+```
+
+
+## Endpoint: `/user/cashiers/{id}`
+
+This endpoint is for deleting a cashier
+
+### Request
+
+#### HTTP Method
+`DELETE`
+
+#### Headers
+
+| Header | Value | Required | Description |
+|--------|-------|----------|-------------|
+| Accept | application/json | Yes | Specifies the response format |
+|Authorization|Bearer {token}|Yes|Authentication token|
+
+### Response
+
+#### Success Response (200 OK)
+
+```json
+{
+   "message" => 'Cashier deleted successfully'
+}
+```
+
+**Error:**
+
+**404 not found**
+
+```json
+{
+    'message' => 'Cashier not found'
+}
+```
+
+## Endpoint: `/user/cashiers/{id}`
+
+This endpoint is for updating a cashier
+
+### Request
+
+#### HTTP Method
+`PUT`
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| name | String  | yes | name of the employee |
+| email | string | yes | email of the employee|
+|passsword | String | yes | password |
+
+
+#### Headers
+
+| Header | Value | Required | Description |
+|--------|-------|----------|-------------|
+| Accept | application/json | Yes | Specifies the response format |
+|Authorization|Bearer {token}|Yes|Authentication token|
+
+### Response
+
+#### Success Response (200 OK)
+
+```json
+{
+   "message" => 'Cashier updated successfully',
+}
+```
+
+**Error:**
+
+**Validation_fails 422**
+
+```json
+{
+    "errors": {
+        "name": [
+            "The name field is required."
+        ],
+        "email": [
+            "The email field is required."
+        ],
+        "password": [
+            "The password field is required."
+        ]
+    }
+}
+
+```
+
+**404 not found**
+
+```json
+{
+    'message' => 'Cashier not found'
+}
+```
+
+
+

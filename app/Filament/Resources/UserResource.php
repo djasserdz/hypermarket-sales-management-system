@@ -68,9 +68,9 @@ class UserResource extends Resource
             ->defaultSort("created_at","desc")
             ->filters([
                 SelectFilter::make('role')->options([
-                    'Admin' => 'Admin',
-                    'Cachier' => 'Cachier',
-                    'Manager' => 'Manager'
+                    'admin' => 'Admin',
+                    'cashier' => 'Cashier',
+                    'manager' => 'Manager'
                 ]),
             ])
             ->actions([

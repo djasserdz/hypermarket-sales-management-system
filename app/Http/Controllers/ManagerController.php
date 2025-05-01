@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Models\CashRegister;
+use App\Http\Resources\CashierResource;
+use App\Models\cashRegister;
+use App\Models\cashRegister as ModelsCashRegister;
+use App\Models\supermarket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +31,7 @@ class ManagerController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $cashRegister = CashRegister::create([
+        $cashRegister = cashRegister::create([
             'supermarket_id' => $request->supermarket_id
         ]);
 
@@ -45,12 +47,10 @@ class ManagerController extends Controller
      */
     public function AddCachier(Request $request)
     {
-        $validator = Validator::make($request->only('name','email','password','cash_register_id'), [
+        $validator = Validator::make($request->only('name','email','password'), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => ['required','string',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],
-            'cash_register_id' => 'required|exists:cash_registers,id'
-        ]);
+            'password' => ['required','string',Password::min(8)->letters()->mixedCase()->numbers()->symbols()],        ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -65,15 +65,9 @@ class ManagerController extends Controller
             'role' => 'cashier'
         ]);
 
-        // Assign to cash register through shifts table
-        $cashier->cashRegisters()->attach($request->cash_register_id, [
-            'start_at' => now(),
-            'end_at' => null
-        ]);
 
         return response()->json([
             'message' => 'Cashier added successfully',
-            'data' => $cashier->load('cashRegisters')
         ],Response::HTTP_OK);
     }
 
@@ -81,18 +75,22 @@ class ManagerController extends Controller
      * Get all cashiers with their cash registers
      * GET /user/cashiers
      */
-    public function showAllCashiers($supermarket_id)
+    public function showAllCashiers(Request $request)
     {
+        $id=$request->user()->id;
+        
+        $supermarket=supermarket::whereManagerId($id)->first();
+        $supermarket_id=$supermarket->id;
+
         $cashiers = User::where('role', 'cashier')
-                    ->whereHas('cashRegisters', function($query) use ($supermarket_id) {
-                        $query->where('supermarket_id', $supermarket_id);
+                    ->whereHas('cashRegister', function($query) use ($supermarket_id) {
+                        $query->where('supermarket_id',1);
                     })
-                    ->with('cashRegisters')
+                    ->with('cashRegister')
                     ->get();
 
         return response()->json([
-            'status' => true,
-            'data' => $cashiers
+            "Cashiers"=>CashierResource::collection($cashiers),
         ],Response::HTTP_OK);
     }
 
@@ -115,9 +113,8 @@ class ManagerController extends Controller
         $cashier->delete();
 
         return response()->json([
-            'status' => true,
             'message' => 'Cashier deleted successfully'
-        ]);
+        ],Response::HTTP_OK);
     }
 
     /**
