@@ -32,6 +32,8 @@ Route::middleware(Authenticationmiddleware::class)->group(function(){
         Route::post('/user/addCacheRegister', [ManagerController::class, 'AddCacheRegister']);
         Route::post('/user/addCachier', [ManagerController::class, 'AddCachier']);
         Route::get('/user/cashiers', [ManagerController::class, 'showAllCashiers']);
+         Route::get('/user/cacheRegisters', [ManagerController::class, 'showAllCacheRegister']);
+         Route::delete('/user/cacheRegisters/{id}', [ManagerController::class, 'deleteCacheRegister']);
         Route::delete('/user/cashiers/{id}', [ManagerController::class, 'deleteCashier']);
         Route::put('/user/cashiers/{id}', [ManagerController::class, 'editCashier']);
     });
