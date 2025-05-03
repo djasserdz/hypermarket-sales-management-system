@@ -36,6 +36,7 @@ Route::middleware(Authenticationmiddleware::class)->group(function(){
          Route::delete('/user/cacheRegisters/{id}', [ManagerController::class, 'deleteCacheRegister']);
         Route::delete('/user/cashiers/{id}', [ManagerController::class, 'deleteCashier']);
         Route::put('/user/cashiers/{id}', [ManagerController::class, 'editCashier']);
+       Route::get('/user/shifts', [ManagerController::class, 'showAllShifts']);
     });
 });
 
