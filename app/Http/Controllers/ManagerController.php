@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\shift;
 
 class ManagerController extends Controller
 {
@@ -84,7 +85,7 @@ class ManagerController extends Controller
 
         $cashiers = User::where('role', 'cashier')
                     ->whereHas('cashRegister', function($query) use ($supermarket_id) {
-                        $query->where('supermarket_id',1);
+                        $query->where('supermarket_id',$supermarket_id);
                     })
                     ->with('cashRegister')
                     ->get();
@@ -157,7 +158,59 @@ class ManagerController extends Controller
             'message' => 'Cashier updated successfully',
         ],Response::HTTP_OK);
     }
+     public function showAllCacheRegisters(Request $request)
+    {
+       $managerId = $request->user()->id;
+
+    $supermarket = supermarket::whereManagerId($managerId)->firstOrFail();
+    $supermarket_id = $supermarket->id;
+
+    $cashRegisters = cashRegister::where('supermarket_id', $supermarket_id)
+                        ->get();
+
+    return response()->json([
+        'cashRegisters' => CashRegisterResource::collection($cashRegisters),
+    ], Response::HTTP_OK);
 }
+     public function deleteCacheRegister($id){
+        $cashRegister = cashRegister::find($id);
+
+    if (!$cashRegister) {
+        return response()->json([
+            'message' => 'Cash register not found'
+        ], Response::HTTP_NOT_FOUND);
+    }
+
+    $cashRegister->users()->detach();
+    $cashRegister->delete();
+    return response()->json([
+        'message' => 'Cash register deleted successfully'
+    ], Response::HTTP_OK);
+}
+    public function showAllShifts(Request $request)
+{
+    $supermarketId = $request->input('supermarket_id');
+
+    $shifts = shift::where('supermarket_id', $supermarketId)
+                ->with('user') 
+                ->get()
+                ->map(function ($shift) {
+                    return [
+                        'cash_register_id' => $shift->cash_register_id,
+                        'cashier_name'     => $shift->user->name,
+                        'start_at'         => $shift->start_at,
+                        'end_at'           => $shift->end_at,
+                    ];
+                });
+
+    return response()->json([
+        'shifts' => $shifts
+    ], Response::HTTP_OK);
+}
+    }
+
+
+
 
 
 
