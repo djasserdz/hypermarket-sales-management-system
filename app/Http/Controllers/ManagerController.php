@@ -193,17 +193,19 @@ public function showAllShifts(Request $request)
 
     $supermarket = Supermarket::where('manager_id', $managerId)->firstOrFail();
 
-    $shifts = Shift::where('supermarket_id', $supermarket->id)
-                ->with(['user', 'cashRegister']) 
-                ->get()
-                ->map(function ($shift) {
-                    return [
-                        'cash_register_id' => $shift->cash_register_id,
-                        'cashier_name'     => $shift->user->name,
-                        'start_at'         => $shift->start_at,
-                        'end_at'           => $shift->end_at,
-                    ];
-                });
+    $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket->id);
+
+    $shifts = Shift::whereIn('cash_register_id', $cashRegisterIds)
+        ->with(['user', 'cashRegister'])
+        ->get()
+        ->map(function ($shift) {
+            return [
+                'cash_register_id' => $shift->cash_register_id,
+                'cashier_name'     => $shift->user->name,
+                'start_at'         => $shift->start_at,
+                'end_at'           => $shift->end_at,
+            ];
+        });
 
     return response()->json([
         'shifts' => $shifts
