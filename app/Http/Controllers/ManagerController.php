@@ -193,7 +193,8 @@ public function showAllShifts(Request $request)
 
     $supermarket = Supermarket::where('manager_id', $managerId)->firstOrFail();
 
-    $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket->id);
+  
+    $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket->id)->pluck('id');
 
     $shifts = Shift::whereIn('cash_register_id', $cashRegisterIds)
         ->with(['user', 'cashRegister'])
