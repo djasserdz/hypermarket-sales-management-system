@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-     Schema::create('shifts', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
-    $table->foreignId('cash_register_id')->constrained('cash_registers', 'id')->cascadeOnDelete();
-    $table->foreignId('supermarket_id')->constrained('supermarkets', 'id')->cascadeOnDelete();
-    $table->timestamp('start_at');
-    $table->timestamp('end_at')->nullable();
-});
-
+        Schema::create('shifts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
+            $table->foreignId("cash_register_id")->constrained('cash_registers', 'id')->cascadeOnDelete();
+            $table->timestamp('start_at');
+            $table->timestamp('end_at')->nullable();
+        });
     }
 
     /**
@@ -29,4 +27,4 @@ return new class extends Migration
     {
         //
     }
-};
+}
