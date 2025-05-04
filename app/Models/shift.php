@@ -36,7 +36,7 @@ class shift extends Model
     public function user():BelongsTo{
         return $this->belongsTo(User::class,'user_id');
     }
-    public function supermarket():BelongsTo{
-        return $this->belongsTo(supermarket::class,'supermarket_id');
+    public function cashRegister():BelongsTo{
+        return $this->belongsTo(cashRegister::class,'cash_register_id');
     }
 }

@@ -29,11 +29,11 @@ Route::middleware(Authenticationmiddleware::class)->group(function(){
     
     
     Route::middleware(IsManagermiddleware::class)->group(function(){
-        Route::post('/user/addCacheRegister', [ManagerController::class, 'AddCacheRegister']);
-        Route::post('/user/addCachier', [ManagerController::class, 'AddCachier']);
+        Route::post('/user/addCashRegister', [ManagerController::class, 'AddCashRegister']);
+        Route::post('/user/addCashier', [ManagerController::class, 'AddCashier']);
         Route::get('/user/cashiers', [ManagerController::class, 'showAllCashiers']);
-         Route::get('/user/cacheRegisters', [ManagerController::class, 'showAllCacheRegisters']);
-         Route::delete('/user/cacheRegisters/{id}', [ManagerController::class, 'deleteCacheRegister']);
+         Route::get('/user/cashRegisters', [ManagerController::class, 'showAllCashRegisters']);
+         Route::delete('/user/cashRegisters/{id}', [ManagerController::class, 'deleteCashRegister']);
         Route::delete('/user/cashiers/{id}', [ManagerController::class, 'deleteCashier']);
         Route::put('/user/cashiers/{id}', [ManagerController::class, 'editCashier']);
        Route::get('/user/shifts', [ManagerController::class, 'showAllShifts']);

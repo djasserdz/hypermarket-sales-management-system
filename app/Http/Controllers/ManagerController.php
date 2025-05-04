@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CashierResource;
+use App\Http\Resources\CashRegisterResource;
 use App\Models\cashRegister;
 use App\Models\cashRegister as ModelsCashRegister;
 use App\Models\supermarket;
@@ -14,26 +15,25 @@ use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\shift;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 class ManagerController extends Controller
 {
+
+    use AuthorizesRequests;
     /**
      * Add new cash register
      * POST /user/addCacheRegister
      */
-    public function AddCacheRegister(Request $request)
+    public function AddCashRegister(Request $request)
     {
-        $validator = Validator::make($request->only('supermarket_id'), [
-            'supermarket_id' => 'required|exists:supermarkets,id'
-        ]);
+        $user_id=$request->user()->id;
 
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $supermarket_id=supermarket::whereManagerId($user_id)->value("id");
 
+        
         $cashRegister = cashRegister::create([
-            'supermarket_id' => $request->supermarket_id
+            'supermarket_id' => $supermarket_id,
         ]);
 
         return response()->json([
@@ -46,7 +46,7 @@ class ManagerController extends Controller
      * Add new cashier and assign to cash register
      * POST /user/addCachier
      */
-    public function AddCachier(Request $request)
+    public function AddCashier(Request $request)
     {
         $validator = Validator::make($request->only('name','email','password'), [
             'name' => 'required|string|max:255',
@@ -63,7 +63,6 @@ class ManagerController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'cashier'
         ]);
 
 
@@ -80,9 +79,8 @@ class ManagerController extends Controller
     {
         $id=$request->user()->id;
         
-        $supermarket=supermarket::whereManagerId($id)->first();
-        $supermarket_id=$supermarket->id;
-
+        $supermarket_id=supermarket::whereManagerId($id)->value("id");
+        
         $cashiers = User::where('role', 'cashier')
                     ->whereHas('cashRegister', function($query) use ($supermarket_id) {
                         $query->where('supermarket_id',$supermarket_id);
@@ -101,16 +99,18 @@ class ManagerController extends Controller
      */
     public function deleteCashier($id)
     {
-        $cashier = User::where('role', 'cashier')->find($id);
-
+        
+        $cashier = User::find($id);
+        
         if (!$cashier) {
             return response()->json([
                 'message' => 'Cashier not found'
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Remove from shifts table first
-        $cashier->cashRegisters()->detach();
+        $this->authorize('delete',$cashier);
+        
+        $cashier->cashRegister()->detach();
         $cashier->delete();
 
         return response()->json([
@@ -124,14 +124,17 @@ class ManagerController extends Controller
      */
     public function editCashier(Request $request, $id)
     {
-        $cashier = User::where('role', 'cashier')->find($id);
+        $cashier = User::find($id);
+
+        
 
         if (!$cashier) {
             return response()->json([
-                'status' => false,
                 'message' => 'Cashier not found'
-            ], 404);
+            ], Response::HTTP_NOT_FOUND);
         }
+
+        $this->authorize("edit",$cashier);
 
         $validator = Validator::make($request->only('name','email','password'), [
             'name' => 'required|string|max:255',
@@ -158,21 +161,22 @@ class ManagerController extends Controller
             'message' => 'Cashier updated successfully',
         ],Response::HTTP_OK);
     }
-     public function showAllCacheRegisters(Request $request)
+     public function showAllCashRegisters(Request $request)
     {
        $managerId = $request->user()->id;
 
-    $supermarket = supermarket::whereManagerId($managerId);
-    $supermarket_id = $supermarket->id;
+       $supermarket_id = supermarket::whereManagerId($managerId)->value("id");
+      
 
-    $cashRegisters = cashRegister::where('supermarket_id', $supermarket_id)
+       $cashRegisters = cashRegister::where('supermarket_id', $supermarket_id)
                         ->get();
+
 
     return response()->json([
         'cashRegisters' => CashRegisterResource::collection($cashRegisters),
     ], Response::HTTP_OK);
 }
-     public function deleteCacheRegister($id){
+     public function deleteCashRegister($id){
         $cashRegister = cashRegister::find($id);
 
     if (!$cashRegister) {
@@ -181,29 +185,33 @@ class ManagerController extends Controller
         ], Response::HTTP_NOT_FOUND);
     }
 
+    $this->authorize('delete', $cashRegister);
+
     $cashRegister->users()->detach();
     $cashRegister->delete();
     return response()->json([
         'message' => 'Cash register deleted successfully'
     ], Response::HTTP_OK);
 }
+
+
 public function showAllShifts(Request $request)
 {
     $managerId = $request->user()->id;
 
-    $supermarket = Supermarket::where('manager_id', $managerId)->firstOrFail();
+    $supermarket_id = Supermarket::where('manager_id', $managerId)->value('id');
 
-    $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket->id)->pluck('id');
+    $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket_id)->pluck('id');
 
-    $shifts = Shift::whereIn('cash_register_id', $cashRegisterIds)
-        ->whereBetween('created_at', [Carbon::today(), Carbon::tomorrow()])
+    $shifts = shift::whereIn('cash_register_id', $cashRegisterIds)
+        ->whereBetween('start_at', [Carbon::today(), Carbon::tomorrow()])
         ->with(['user', 'cashRegister'])
         ->get()
         ->map(function ($shift) {
             return [
                 'cash_register_id' => $shift->cash_register_id,
                 'cashier_name'     => $shift->user->name,
-                'start_at'         => $shift->created_at,
+                'start_at'         => $shift->start_at,
                 'end_at'           => $shift->end_at,
             ];
         });
@@ -212,139 +220,7 @@ public function showAllShifts(Request $request)
         'shifts' => $shifts
     ], Response::HTTP_OK);
 }
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*----OLD VRS----
-class ManagerController extends Controller
-{
-    public function AddCacheRegister(Request $request)
-    {
-        $validation = Validator::make($request->only('supermarket_id'), [
-            'supermarket_id' => ['required', 'exists:supermarkets,id'],
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => "wiiiw",
-            ], 422);
-        }
-
-        $supermarket_id = $request->supermarket_id;
-        cashRegister::create(["supermarket_id" => $supermarket_id]);
-
-        return response()->json([
-            'status' => true,
-            'message' => "Cash register added successfully!"
-        ]);
-    }
-
-    public function AddCachier(Request $request)
-    {
-        $validation = Validator::make($request->only('name', 'email', 'password'), [
-            'name' => ['required', 'string'],
-            'email' => ['required', 'email', 'unique:cash_registers,email'],
-            'password' => ['required', 'string']
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' =>"if there is error is hicham mistake not main",
-            ], 422);
-        }
-
-        $name = $request->name;
-        $email = $request->email;
-        $password = bcrypt($request->password);
-        $role = "cachier";
-
-        cashRegister::create([
-            "name"     => $name,
-            "email"    => $email,
-            "password" => $password,
-            "role"     => $role
-        ]);
-
-        return response()->json([
-            'status' => true,
-            'message' => "Cashier added successfully!"
-        ]);
-    }
-
-    public function showAllCashiers()
-    {
-        $cashiers = cashRegister::where('role', 'cachier')->get();
-        return response()->json([
-            'status' => true,
-            'data' => $cashiers
-        ]);
-    }
-
-    public function deleteCashier($id)
-    {
-        $cashier = cashRegister::where('role', 'cachier')->find($id);
-
-        if (!$cashier) {
-            return response()->json([
-                "status" => false,
-                "message" => "Cashier not found"
-            ], 404);
-        }
-
-        $cashier->delete();
-
-        return response()->json([
-            "status" => true,
-            "message" => "Cashier deleted successfully"
-        ]);
-    }
-
-    public function editCashier(Request $request, $id)
-    {
-        $cashier = cashRegister::where('role', 'cachier')->find($id);
-
-        if (!$cashier) {
-            return response()->json([
-                "status" => false,
-                "message" => "Cashier not found"
-            ], 404);
-        }
-        if ($request->has('password')) {
-            $request['password'] = bcrypt($request->password);
-        }
-
-        $cashier->update($request->all());
-
-        return response()->json([
-            "status" => true,
-            "message" => "Cashier updated successfully",
-            "data" => $cashier
-        ]);
-    }
 }
-*/
+
+
+
