@@ -27,16 +27,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class shift extends Model
 {
-    protected $table='shifts';
-    protected $fillable=[
-        'supermarket_id',
+   protected $table = 'shifts';
+
+    protected $fillable = [
         'user_id',
+        'cash_register_id',
+        'supermarket_id',
+        'start_at',
+        'end_at',
     ];
 
-    public function user():BelongsTo{
-        return $this->belongsTo(User::class,'user_id');
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
-    public function supermarket():BelongsTo{
-        return $this->belongsTo(supermarket::class,'supermarket_id');
+
+    public function cashRegister(): BelongsTo
+    {
+        return $this->belongsTo(CashRegister::class, 'cash_register_id');
+    }
+
+    public function supermarket(): BelongsTo
+    {
+        return $this->belongsTo(Supermarket::class, 'supermarket_id');
     }
 }
