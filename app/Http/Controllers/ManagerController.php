@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\shift;
-
+use Carbon\Carbon;
 class ManagerController extends Controller
 {
     /**
@@ -193,17 +193,17 @@ public function showAllShifts(Request $request)
 
     $supermarket = Supermarket::where('manager_id', $managerId)->firstOrFail();
 
-  
     $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket->id)->pluck('id');
 
     $shifts = Shift::whereIn('cash_register_id', $cashRegisterIds)
+        ->whereBetween('created_at', [Carbon::today(), Carbon::tomorrow()])
         ->with(['user', 'cashRegister'])
         ->get()
         ->map(function ($shift) {
             return [
                 'cash_register_id' => $shift->cash_register_id,
                 'cashier_name'     => $shift->user->name,
-                'start_at'         => $shift->start_at,
+                'start_at'         => $shift->created_at,
                 'end_at'           => $shift->end_at,
             ];
         });
