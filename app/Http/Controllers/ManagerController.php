@@ -187,12 +187,14 @@ class ManagerController extends Controller
         'message' => 'Cash register deleted successfully'
     ], Response::HTTP_OK);
 }
-    public function showAllShifts(Request $request)
+public function showAllShifts(Request $request)
 {
-    $supermarketId = $request->input('supermarket_id');
+    $managerId = $request->user()->id;
 
-    $shifts = shift::where('supermarket_id', $supermarketId)
-                ->with('user') 
+    $supermarket = Supermarket::where('manager_id', $managerId)->firstOrFail();
+
+    $shifts = Shift::where('supermarket_id', $supermarket->id)
+                ->with(['user', 'cashRegister']) 
                 ->get()
                 ->map(function ($shift) {
                     return [
@@ -207,6 +209,7 @@ class ManagerController extends Controller
         'shifts' => $shifts
     ], Response::HTTP_OK);
 }
+
     }
 
 
