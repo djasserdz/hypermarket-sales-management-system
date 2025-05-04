@@ -162,7 +162,7 @@ class ManagerController extends Controller
     {
        $managerId = $request->user()->id;
 
-    $supermarket = supermarket::whereManagerId($managerId)->firstOrFail();
+    $supermarket = supermarket::whereManagerId($managerId);
     $supermarket_id = $supermarket->id;
 
     $cashRegisters = cashRegister::where('supermarket_id', $supermarket_id)
