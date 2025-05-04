@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
             $table->foreignId("cash_register_id")->constrained('cash_registers', 'id')->cascadeOnDelete();
-            $table->timestamp('start_at');
+            
             $table->timestamp('end_at')->nullable();
         });
     }
