@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class DailySalesReport extends Mailable
+class DailySalesAdminReport extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,7 +20,7 @@ class DailySalesReport extends Mailable
 
     public function build()
     {
-        return $this->view('emails.daily_sales_manager') 
+        return $this->view('emails.daily_sales_admin') 
                 ->subject('Daily Sales Report');
     }
 }

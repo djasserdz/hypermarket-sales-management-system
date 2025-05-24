@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0d9665bd73f383c000b0466717fb5f2",
+    "content-hash": "af831bc8c23e725b82b1805f129f08e6",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -3792,6 +3792,111 @@
                 }
             ],
             "time": "2025-03-24T10:02:05+00:00"
+        },
+        {
+            "name": "nativephp/laravel",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NativePHP/laravel.git",
+                "reference": "9e9166d698e55e1877ba1726ba7d25999c85065f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NativePHP/laravel/zipball/9e9166d698e55e1877ba1726ba7d25999c85065f",
+                "reference": "9e9166d698e55e1877ba1726ba7d25999c85065f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^10.0|^11.0|^12.0",
+                "php": "^8.3",
+                "spatie/laravel-package-tools": "^1.16.4",
+                "symfony/finder": "^6.2|^7.0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.0",
+                "larastan/larastan": "^2.0|^3.1",
+                "laravel/pint": "^1.0",
+                "nunomaduro/collision": "^7.11|^8.1.1",
+                "orchestra/testbench": "^8.0|^9.0|^10.0",
+                "pestphp/pest": "^v2.30|^3.0",
+                "pestphp/pest-plugin-arch": "^2.0|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.0|^3.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
+                "phpstan/phpstan-phpunit": "^1.0|^2.0",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "App": "Native\\Laravel\\Facades\\App",
+                        "Dock": "Native\\Laravel\\Facades\\Dock",
+                        "Menu": "Native\\Laravel\\Facades\\Menu",
+                        "Shell": "Native\\Laravel\\Facades\\Shell",
+                        "Screen": "Native\\Laravel\\Facades\\Screen",
+                        "System": "Native\\Laravel\\Facades\\System",
+                        "Window": "Native\\Laravel\\Facades\\Window",
+                        "MenuBar": "Native\\Laravel\\Facades\\MenuBar",
+                        "Process": "Native\\Laravel\\Facades\\Process",
+                        "Settings": "Native\\Laravel\\Facades\\Settings",
+                        "Clipboard": "Native\\Laravel\\Facades\\Clipboard",
+                        "ContextMenu": "Native\\Laravel\\Facades\\ContextMenu",
+                        "QueueWorker": "Native\\Laravel\\Facades\\QueueWorker",
+                        "ChildProcess": "Native\\Laravel\\Facades\\ChildProcess",
+                        "Notification": "Native\\Laravel\\Facades\\Notification",
+                        "PowerMonitor": "Native\\Laravel\\Facades\\PowerMonitor",
+                        "GlobalShortcut": "Native\\Laravel\\Facades\\GlobalShortcut"
+                    },
+                    "providers": [
+                        "Native\\Laravel\\NativeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Native\\Laravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcel Pociot",
+                    "email": "marcel@beyondco.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Simon Hamp",
+                    "email": "simon.hamp@me.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel wrapper for the NativePHP framework.",
+            "homepage": "https://github.com/nativephp/laravel",
+            "keywords": [
+                "laravel",
+                "nativephp",
+                "nativephp-laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/NativePHP/laravel/issues",
+                "source": "https://github.com/NativePHP/laravel/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/simonhamp",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/nativephp",
+                    "type": "opencollective"
+                }
+            ],
+            "time": "2025-04-07T14:52:57+00:00"
         },
         {
             "name": "nesbot/carbon",

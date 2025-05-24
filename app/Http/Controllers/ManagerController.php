@@ -108,7 +108,8 @@ class ManagerController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $this->authorize('delete',$cashier);
+        
+
         
         $cashier->cashRegister()->detach();
         $cashier->delete();
@@ -134,7 +135,7 @@ class ManagerController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $this->authorize("edit",$cashier);
+        
 
         $validator = Validator::make($request->only('name','email','password'), [
             'name' => 'required|string|max:255',
@@ -185,7 +186,7 @@ class ManagerController extends Controller
         ], Response::HTTP_NOT_FOUND);
     }
 
-    $this->authorize('delete', $cashRegister);
+    
 
     $cashRegister->users()->detach();
     $cashRegister->delete();
