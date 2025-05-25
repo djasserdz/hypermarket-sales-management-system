@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StockResource\Pages;
 use App\Filament\Resources\StockResource\RelationManagers;
-use App\Models\stock;
+use App\Models\Stock;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -22,7 +22,7 @@ use function Laravel\Prompts\text;
 
 class StockResource extends Resource
 {
-    protected static ?string $model = stock::class;
+    protected static ?string $model = Stock::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 

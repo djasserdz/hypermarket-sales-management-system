@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Transfers extends Model
 {
+    use HasFactory;
     protected $table='transfers';
     protected $fillable=[
         'product_id',
@@ -44,14 +46,14 @@ class Transfers extends Model
     ];
 
     public function product():BelongsTo{
-        return $this->belongsTo(product::class,'product_id');
+        return $this->belongsTo(Product::class,'product_id');
     }
     public function fromSupermarket(): BelongsTo
     {
-        return $this->belongsTo(supermarket::class, 'from_supermarket');
+        return $this->belongsTo(Supermarket::class, 'from_supermarket');
     }
 
       public function toSupermarket(): BelongsTo{
-         return $this->belongsTo(supermarket::class, 'to_supermarket');
+         return $this->belongsTo(Supermarket::class, 'to_supermarket');
     }
 }

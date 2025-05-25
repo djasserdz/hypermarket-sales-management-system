@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Filament\Resources\ProductResource;
-use App\Http\Resources\product as ResourcesProduct;
+use App\Http\Resources\Product as ResourcesProduct;
 use App\Http\Resources\ProductResource as ResourcesProductResource;
-use App\Models\product;
+use App\Models\Product;
 use App\Services\ShortestPathService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -35,7 +35,7 @@ class CashierController extends Controller
 
            
         $product = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($search) {
-                return product::where('name', 'LIKE', "%$search%")
+                return Product::where('name', 'LIKE', "%$search%")
                     ->orWhere('barcode', 'LIKE', "%$search%")->get();
         });
 
@@ -77,7 +77,7 @@ class CashierController extends Controller
     $supermarket_id = $cashRegister->supermarket_id;
     $productIDs = collect($request->products)->pluck('id');
 
-    $products = product::with(['supermarket' => function ($query) use ($supermarket_id) {
+    $products = Product::with(['supermarket' => function ($query) use ($supermarket_id) {
         $query->where('supermarket_id', $supermarket_id);
     }])->whereIn('id', $productIDs)->get()->keyBy('id');
 

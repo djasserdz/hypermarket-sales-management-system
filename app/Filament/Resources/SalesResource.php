@@ -3,8 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SalesResource\Pages;
-use App\Models\Sale as ModelsSale;
-use App\Models\sale;
+use App\Models\Sale;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,7 +14,7 @@ use Filament\Tables\Actions\Action;
 
 class SalesResource extends Resource
 {
-    protected static ?string $model = sale::class;
+    protected static ?string $model = Sale::class;
     
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     

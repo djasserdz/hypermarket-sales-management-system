@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\ProductResource\Widgets;
 
-use App\Models\product;
+use App\Models\Product;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +12,7 @@ class TopSellingProducts extends Widget
 
     protected function getViewData(): array
     {
-        $topProducts = product::select('products.name', DB::raw('SUM(sale_items.quantity) as total_sold'))
+        $topProducts = Product::select('products.name', DB::raw('SUM(sale_items.quantity) as total_sold'))
             ->join('sale_items', 'products.id', '=', 'sale_items.product_id')
             ->groupBy('products.id', 'products.name')
             ->orderByDesc('total_sold')

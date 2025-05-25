@@ -104,6 +104,35 @@ class SaleReportResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('download_json')
+                    ->label('Download JSON')
+                    ->icon('heroicon-o-code-bracket-square')
+                    ->action(function (SaleReport $record) {
+                        try {
+                            if (Storage::disk('public')->exists($record->file_path)) {
+                                $fileName = basename($record->file_path);
+                                return response()->streamDownload(function () use ($record) {
+                                    echo Storage::disk('public')->get($record->file_path);
+                                }, $fileName, [
+                                    'Content-Type' => 'application/json',
+                                ]);
+                            }
+                            Notification::make()
+                                ->title('Error')
+                                ->body('Report JSON file not found.')
+                                ->danger()
+                                ->send();
+                            return null;
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Error')
+                                ->body('Failed to download JSON: ' . $e->getMessage())
+                                ->danger()
+                                ->send();
+                            return null;
+                        }
+                    })
+                    ->color('gray'),
                 Tables\Actions\Action::make('download')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->label('Download PDF')

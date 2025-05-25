@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CashierResource;
 use App\Http\Resources\CashRegisterResource;
-use App\Models\cashRegister;
-use App\Models\cashRegister as ModelsCashRegister;
-use App\Models\supermarket;
+use App\Models\CashRegister;
+use App\Models\CashRegister as ModelsCashRegister;
+use App\Models\Supermarket;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\shift;
+use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -29,10 +29,10 @@ class ManagerController extends Controller
     {
         $user_id=$request->user()->id;
 
-        $supermarket_id=supermarket::whereManagerId($user_id)->value("id");
+        $supermarket_id=Supermarket::whereManagerId($user_id)->value("id");
 
         
-        $cashRegister = cashRegister::create([
+        $cashRegister = CashRegister::create([
             'supermarket_id' => $supermarket_id,
         ]);
 
@@ -79,7 +79,7 @@ class ManagerController extends Controller
     {
         $id=$request->user()->id;
         
-        $supermarket_id=supermarket::whereManagerId($id)->value("id");
+        $supermarket_id=Supermarket::whereManagerId($id)->value("id");
         
         $cashiers = User::where('role', 'cashier')
                     ->whereHas('cashRegister', function($query) use ($supermarket_id) {
@@ -166,10 +166,10 @@ class ManagerController extends Controller
     {
        $managerId = $request->user()->id;
 
-       $supermarket_id = supermarket::whereManagerId($managerId)->value("id");
+       $supermarket_id = Supermarket::whereManagerId($managerId)->value("id");
       
 
-       $cashRegisters = cashRegister::where('supermarket_id', $supermarket_id)
+       $cashRegisters = CashRegister::where('supermarket_id', $supermarket_id)
                         ->get();
 
 
@@ -178,7 +178,7 @@ class ManagerController extends Controller
     ], Response::HTTP_OK);
 }
      public function deleteCashRegister($id){
-        $cashRegister = cashRegister::find($id);
+        $cashRegister = CashRegister::find($id);
 
     if (!$cashRegister) {
         return response()->json([
@@ -204,7 +204,7 @@ public function showAllShifts(Request $request)
 
     $cashRegisterIds = CashRegister::where('supermarket_id', $supermarket_id)->pluck('id');
 
-    $shifts = shift::whereIn('cash_register_id', $cashRegisterIds)
+    $shifts = Shift::whereIn('cash_register_id', $cashRegisterIds)
         ->whereBetween('start_at', [Carbon::today(), Carbon::tomorrow()])
         ->with(['user', 'cashRegister'])
         ->get()

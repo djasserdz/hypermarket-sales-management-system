@@ -23,9 +23,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\cashRegister> $cashRegister
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CashRegister> $cashRegister
  * @property-read int|null $cash_register_count
- * @property-read \App\Models\supermarket|null $manager
+ * @property-read \App\Models\Supermarket|null $manager
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
@@ -90,10 +90,10 @@ class User extends Authenticatable
 
     public function cashRegister(): BelongsToMany
     {
-        return $this->belongsToMany(cashRegister::class, 'shifts', 'user_id', 'cash_register_id')->withPivot('start_at', 'end_at');
+        return $this->belongsToMany(CashRegister::class, 'shifts', 'user_id', 'cash_register_id')->withPivot('start_at', 'end_at');
     }
     public function manager():HasOne{
         
-        return $this->hasOne(supermarket::class,'manager_id');
+        return $this->hasOne(Supermarket::class,'manager_id');
     }
 }

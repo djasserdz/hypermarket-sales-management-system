@@ -16,17 +16,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\product> $products
  * @property-read int|null $products_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier wherePhoneNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|supplier whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier wherePhoneNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Supplier whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class supplier extends Model
+class Supplier extends Model
 {
     /** @use HasFactory<\Database\Factories\SupplierFactory> */
     use HasFactory;
@@ -41,4 +41,4 @@ class supplier extends Model
     {
         return $this->hasMany(product::class, 'supplier_id');
     }
-}
+} 

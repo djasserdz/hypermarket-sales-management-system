@@ -2,14 +2,13 @@
 namespace App\Services;
 
 use App\Helpers\DistanceHelper;
-use App\Models\Supermarket;
-use App\Models\Transfer;
-use App\Models\Product;
+// use App\Models\Transfer; // Removing singular import as plural is instantiated
 use App\Models\supermarket as ModelsSupermarket;
-use App\Models\Transfers;
+use App\Models\Transfers; // Keeping plural import to match instantiation
 use Fhaculty\Graph\Graph;
 use Graphp\Algorithms\ShortestPath\Dijkstra;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon; // Added Carbon import
 
 class ShortestPathService
 {
@@ -67,7 +66,7 @@ class ShortestPathService
         }
         
         // Create edges between supermarkets with a maximum distance threshold
-        $maxDistanceThreshold = 60000; // Maximum distance in km to consider
+        $maxDistanceThreshold = 80000;
         $ids = $supermarkets->pluck('id')->values();
         
         for ($i = 0; $i < count($ids); $i++) {
@@ -94,34 +93,39 @@ class ShortestPathService
         
         // Find the nearest supermarket with sufficient stock
         $startVertex = $vertexMap[$fromSupermarketId];
-        $algorithm = new Dijkstra($startVertex);
-        
         $shortestDistance = INF;
         $destinationSupermarket = null;
-        $pathVertices = [];
+        $actualPath = [];
         
         foreach ($targetSupermarkets as $target) {
             if (!isset($vertexMap[$target->id])) continue;
             
             $targetVertex = $vertexMap[$target->id];
-            
+            $algorithm = new Dijkstra($startVertex);
+
             try {
                 // Get the distance
-                $distance = $algorithm->getDistance($targetVertex);
+                $currentDistance = $algorithm->getDistance($targetVertex);
                 
-                if ($distance < $shortestDistance) {
-                    $shortestDistance = $distance;
+                if ($currentDistance < $shortestDistance) {
+                    $shortestDistance = $currentDistance;
                     $destinationSupermarket = $target;
                     
-                    // Manually construct the path - since getShortestPathTo is not available
-                    // We'll just create a direct path from source to destination
-                    $pathVertices = [$fromSupermarketId, $target->id];
+                    // Attempt to get the actual path
+                    $walk = $algorithm->getWalkTo($targetVertex);
+                    $pathVertices = $walk->getVertices()->getIds();
+                    $actualPath = $pathVertices;
                 }
+            } catch (\OutOfBoundsException $e) {
+                // Target vertex is not reachable
+                continue;
             } catch (\Exception $e) {
+                // Other general exceptions from graph algorithm
                 continue;
             }
         }
         
+        // This check is crucial
         if (!$destinationSupermarket) {
             return [
                 'path' => null,
@@ -131,13 +135,25 @@ class ShortestPathService
             ];
         }
         
+        // Check if a transfer for this product to this supermarket was already created today
+        $existingTransferToday = Transfers::where('product_id', $productId)
+                                          ->where('to_supermarket', $fromSupermarketId) // Supermarket needing stock
+                                          ->whereDate('created_at', Carbon::today())
+                                          ->exists();
+
+        if ($existingTransferToday) {
+            return [
+                              'message' => 'A transfer request for this product to your supermarket has already been initiated today.'
+            ];
+        }
+        
         try {
             DB::beginTransaction();
             
-            $transfer = new Transfers();
+            $transfer = new Transfers(); // Instantiating plural, matches plural import
             $transfer->product_id = $productId;
-            $transfer->from_supermarket= $destinationSupermarket->id;
-            $transfer->to_supermarket= $fromSupermarketId;
+            $transfer->from_supermarket = $destinationSupermarket->id;
+            $transfer->to_supermarket = $fromSupermarketId;
             $transfer->quantity = $quantityNeeded;
             $transfer->status = 'pending';
             $transfer->save();
@@ -145,8 +161,8 @@ class ShortestPathService
             DB::commit();
             
             return [
-                'path' => $pathVertices,
-                'distance_km' => round($shortestDistance, 2),
+                'path' => $actualPath,
+                'distance_km' => is_finite($shortestDistance) ? round($shortestDistance, 2) : null,
                 'destination_supermarket' => $destinationSupermarket->name ?? null,
                 'transfer_id' => $transfer->id,
                 'message' => 'Transfer request created successfully.'
@@ -156,8 +172,8 @@ class ShortestPathService
             DB::rollBack();
             
             return [
-                'path' => $pathVertices,
-                'distance_km' => round($shortestDistance, 2),
+                'path' => $actualPath,
+                'distance_km' => is_finite($shortestDistance) ? round($shortestDistance, 2) : null,
                 'destination_supermarket' => $destinationSupermarket->name ?? null,
                 'message' => 'Found shortest path but failed to create transfer: ' . $e->getMessage()
             ];

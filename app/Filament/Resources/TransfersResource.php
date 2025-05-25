@@ -65,7 +65,7 @@ class TransfersResource extends Resource
                     ->color("primary")
                     ->action(function (Transfers $record) {
                         $record->update([
-                            'status' => 'delevired',
+                            'status' => 'delivered',
                         ]);
                         Notification::make()
                             ->title('Transfer Marked as Delivered')

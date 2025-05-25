@@ -5,97 +5,106 @@
     <title>Sales Report</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'DejaVu Sans', 'Arial', sans-serif; /* Added DejaVu Sans for better UTF-8 support */
             margin: 0;
             padding: 20px;
             color: #333;
+            font-size: 12px;
         }
         .header {
             text-align: center;
             border-bottom: 2px solid #007bff;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px; /* Adjusted */
+            margin-bottom: 25px; /* Adjusted */
         }
         .header h1 {
             color: #007bff;
             margin: 0;
-            font-size: 28px;
+            font-size: 24px; /* Adjusted */
         }
         .header p {
             margin: 5px 0;
             color: #666;
+            font-size: 12px; /* Adjusted */
         }
         .report-info {
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
-            margin-bottom: 30px;
+            margin-bottom: 25px; /* Adjusted */
+            border: 1px solid #e3e3e3; /* Added border */
         }
         .report-info h2 {
             margin-top: 0;
+            margin-bottom: 10px; /* Added */
             color: #007bff;
-            font-size: 18px;
+            font-size: 16px; /* Adjusted */
         }
         .info-row {
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* Adjusted */
+            font-size: 12px; /* Adjusted */
         }
         .info-label {
             font-weight: bold;
             color: #495057;
             display: inline-block;
-            width: 120px;
+            width: 130px; /* Adjusted */
         }
         .summary-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px; /* Adjusted */
         }
         .summary-section h2 {
             color: #007bff;
             border-bottom: 1px solid #dee2e6;
-            padding-bottom: 5px;
+            padding-bottom: 8px; /* Adjusted */
+            font-size: 18px; /* Added */
+            margin-bottom: 15px; /* Added */
         }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        /* Summary cards - using table for better PDF rendering compatibility */
+        .summary-table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
         }
-        .summary-card {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
+        .summary-table td {
+            border: 1px solid #e3e3e3;
+            padding: 10px;
             text-align: center;
-            border-left: 4px solid #007bff;
+            width: 33.33%; /* For 3 cards per row */
         }
-        .summary-card h3 {
-            margin: 0 0 10px 0;
+        .summary-table h3 {
+            margin: 0 0 8px 0;
             color: #495057;
-            font-size: 14px;
+            font-size: 13px; /* Adjusted */
             text-transform: uppercase;
         }
-        .summary-card .value {
-            font-size: 24px;
+        .summary-table .value {
+            font-size: 20px; /* Adjusted */
             font-weight: bold;
             color: #007bff;
             margin: 0;
         }
+
         .table-section {
-            margin-bottom: 30px;
+            margin-bottom: 25px; /* Adjusted */
         }
         .table-section h2 {
             color: #007bff;
             border-bottom: 1px solid #dee2e6;
-            padding-bottom: 5px;
+            padding-bottom: 8px; /* Adjusted */
+            font-size: 18px; /* Added */
+            margin-bottom: 15px; /* Added */
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 12px;
+            margin-top: 10px; /* Adjusted */
+            font-size: 11px; /* Adjusted for more data */
         }
         th, td {
-            padding: 8px;
+            padding: 6px 8px; /* Adjusted */
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
+            border: 1px solid #dee2e6; /* Added full borders */
         }
         th {
             background-color: #007bff;
@@ -108,50 +117,81 @@
         .text-right {
             text-align: right;
         }
+        .text-center {
+            text-align: center;
+        }
         .footer {
-            margin-top: 50px;
+            margin-top: 40px; /* Adjusted */
             text-align: center;
             color: #666;
-            font-size: 12px;
+            font-size: 10px; /* Adjusted */
             border-top: 1px solid #dee2e6;
-            padding-top: 20px;
+            padding-top: 15px; /* Adjusted */
         }
         .badge {
-            padding: 4px 8px;
+            padding: 3px 6px; /* Adjusted */
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px; /* Adjusted */
             font-weight: bold;
+            color: white; /* General color */
         }
         .badge-success {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #28a745; /* Darker green */
         }
         .badge-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
+            background-color: #17a2b8; /* Darker info blue */
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .supermarket-breakdown {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e3e3e3;
+        }
+        .supermarket-breakdown h3 {
+            color: #0056b3; /* Darker blue for supermarket name */
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <?php
-        // Safe date formatting helper
+    @php
+        // Determine report structure based on $reportType and $content structure
+        $isGeneralAdminReport = ($reportType === 'General (Admin)' && isset($content['supermarkets_breakdown']));
+        $isSupermarketReport = (!$isGeneralAdminReport && isset($content['supermarket']));
+
+        // Safe date formatting
         $currentDateTime = date('Y-m-d H:i:s');
-        $safeReportDate = isset($reportDate) ? $reportDate : 'Unknown';
-        $safeCreatedAt = 'Unknown';
+        $safeReportDate = $content['date'] ?? 'Unknown'; // Get date from content
         
-        if (isset($report->created_at)) {
-            if (is_string($report->created_at)) {
-                $safeCreatedAt = $report->created_at;
-            } elseif (is_object($report->created_at) && method_exists($report->created_at, 'format')) {
-                $safeCreatedAt = $report->created_at->format('Y-m-d H:i:s');
-            }
+        // Extract main data points
+        $reportTitle = $isGeneralAdminReport ? 'General Admin Sales Report' : ($isSupermarketReport ? 'Supermarket Sales Report: ' . $content['supermarket'] : 'Sales Report');
+        $totalRevenue = $content['total_money'] ?? 0;
+        $totalProductsSold = $content['total_products_sold'] ?? ($content['total_quantity'] ?? 0); // Adjusted to check both keys
+
+        $mainProductList = [];
+        if ($isGeneralAdminReport && isset($content['all_products'])) {
+            $mainProductList = $content['all_products'];
+        } elseif ($isSupermarketReport && isset($content['report'])) {
+            $mainProductList = $content['report'];
         }
-    ?>
+
+        $supermarketBreakdownList = $isGeneralAdminReport && isset($content['supermarkets_breakdown']) ? $content['supermarkets_breakdown'] : [];
+        $activeSupermarketsCount = count($supermarketBreakdownList);
+    @endphp
 
     <div class="header">
-        <h1>Sales Report</h1>
-        <p>{{ $reportType ?? 'Sales Report' }}</p>
-        <p>Generated on {{ $currentDateTime }}</p>
+        <h1>{{ $reportTitle }}</h1>
+        <p>Date: {{ $safeReportDate }}</p>
+        <p>Generated on: {{ $currentDateTime }}</p>
     </div>
 
     <div class="report-info">
@@ -162,158 +202,129 @@
         </div>
         <div class="info-row">
             <span class="info-label">Report Type:</span>
-            <span class="badge {{ isset($reportType) && str_contains($reportType, 'General') ? 'badge-success' : 'badge-info' }}">
+            <span class="badge {{ $isGeneralAdminReport ? 'badge-success' : 'badge-info' }}">
                 {{ $reportType ?? 'Unknown' }}
             </span>
         </div>
+        @if($isSupermarketReport && isset($content['supermarket']))
         <div class="info-row">
-            <span class="info-label">Generated At:</span>
-            <span>{{ $safeCreatedAt }}</span>
+            <span class="info-label">Supermarket:</span>
+            <span>{{ $content['supermarket'] }}</span>
         </div>
+        @endif
     </div>
 
-    @if(isset($content) && is_array($content) && (isset($content['total_money']) || isset($content['total_quantity']) || isset($content['total_orders'])))
     <div class="summary-section">
         <h2>Summary</h2>
-        <div class="summary-grid">
-            @if(isset($content['total_money']))
-            <div class="summary-card">
-                <h3>Total Revenue</h3>
-                <p class="value">${{ number_format((float)$content['total_money'], 2) }}</p>
-            </div>
-            @endif
-            
-            @if(isset($content['total_quantity']))
-            <div class="summary-card">
-                <h3>Total Quantity</h3>
-                <p class="value">{{ number_format((int)$content['total_quantity']) }}</p>
-            </div>
-            @endif
-            
-            @if(isset($content['total_orders']))
-            <div class="summary-card">
-                <h3>Total Orders</h3>
-                <p class="value">{{ number_format((int)$content['total_orders']) }}</p>
-            </div>
-            @endif
-            
-            @if(isset($content['total_quantity']) && isset($content['total_orders']) && (int)$content['total_orders'] > 0)
-            <div class="summary-card">
-                <h3>Avg Items/Order</h3>
-                <p class="value">{{ number_format((float)$content['total_quantity'] / (float)$content['total_orders'], 2) }}</p>
-            </div>
-            @endif
-        </div>
+        <table class="summary-table">
+            <tr>
+                <td>
+                    <h3>Total Revenue</h3>
+                    <p class="value">${{ number_format((float)$totalRevenue, 2) }}</p>
+                </td>
+                <td>
+                    <h3>Total Products Sold</h3>
+                    <p class="value">{{ number_format((int)$totalProductsSold) }}</p>
+                </td>
+                @if($isGeneralAdminReport)
+                <td>
+                    <h3>Active Supermarkets</h3>
+                    <p class="value">{{ $activeSupermarketsCount }}</p>
+                </td>
+                @else
+                 <td>
+                    <h3>Products Types Sold</h3>
+                    <p class="value">{{ count($mainProductList) }}</p>
+                </td>
+                @endif
+            </tr>
+        </table>
     </div>
-    @endif
 
-    @if(isset($content['products']) && is_array($content['products']) && count($content['products']) > 0)
+    @if(count($mainProductList) > 0)
     <div class="table-section">
-        <h2>Product Sales Details</h2>
+        <h2>{{ $isGeneralAdminReport ? 'All Products Sold (Combined)' : 'Sales Details' }}</h2>
         <table>
             <thead>
                 <tr>
                     <th>Product Name</th>
-                    <th class="text-right">Quantity Sold</th>
+                    @if($isSupermarketReport || $isGeneralAdminReport) {{-- ID is usually in individual product lists --}}
+                        <th>ID</th>
+                    @endif
                     <th class="text-right">Unit Price</th>
+                    <th class="text-right">Quantity Sold</th>
                     <th class="text-right">Total Revenue</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($content['products'] as $product)
+                @foreach($mainProductList as $item)
                 <tr>
-                    <td>{{ isset($product['name']) ? $product['name'] : 'N/A' }}</td>
-                    <td class="text-right">{{ isset($product['quantity']) ? number_format((int)$product['quantity']) : 'N/A' }}</td>
-                    <td class="text-right">
-                        @if(isset($product['price']))
-                            ${{ number_format((float)$product['price'], 2) }}
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                    <td class="text-right">
-                        @if(isset($product['total_revenue']))
-                            ${{ number_format((float)$product['total_revenue'], 2) }}
-                        @elseif(isset($product['quantity']) && isset($product['price']))
-                            ${{ number_format((float)$product['quantity'] * (float)$product['price'], 2) }}
-                        @else
-                            N/A
-                        @endif
-                    </td>
+                    <td>{{ $item['name'] ?? 'N/A' }}</td>
+                    @if($isSupermarketReport || $isGeneralAdminReport)
+                         <td>{{ $item['id'] ?? 'N/A' }}</td>
+                    @endif
+                    <td class="text-right">${{ number_format((float)($item['price'] ?? 0), 2) }}</td>
+                    <td class="text-right">{{ number_format((int)($item['total_quantity'] ?? ($item['quantity'] ?? 0) )) }}</td>
+                    <td class="text-right">${{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    @endif
-
-    @if(isset($content['supermarkets']) && is_array($content['supermarkets']) && count($content['supermarkets']) > 0)
+    @else
     <div class="table-section">
-        <h2>Supermarket Performance</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Supermarket</th>
-                    <th class="text-right">Total Revenue</th>
-                    <th class="text-right">Total Orders</th>
-                    <th class="text-right">Items Sold</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($content['supermarkets'] as $market)
-                <tr>
-                    <td>{{ isset($market['name']) ? $market['name'] : 'N/A' }}</td>
-                    <td class="text-right">
-                        @if(isset($market['total_revenue']))
-                            ${{ number_format((float)$market['total_revenue'], 2) }}
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                    <td class="text-right">{{ isset($market['total_orders']) ? number_format((int)$market['total_orders']) : 'N/A' }}</td>
-                    <td class="text-right">{{ isset($market['total_items']) ? number_format((int)$market['total_items']) : 'N/A' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <h2>{{ $isGeneralAdminReport ? 'All Products Sold (Combined)' : 'Sales Details' }}</h2>
+        <p class="no-data">No product sales data available for this report.</p>
     </div>
     @endif
 
-    @if(isset($content['daily_sales']) && is_array($content['daily_sales']) && count($content['daily_sales']) > 0)
+    @if($isGeneralAdminReport && count($supermarketBreakdownList) > 0)
     <div class="table-section">
-        <h2>Daily Sales Breakdown</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th class="text-right">Revenue</th>
-                    <th class="text-right">Orders</th>
-                    <th class="text-right">Items Sold</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($content['daily_sales'] as $daily)
-                <tr>
-                    <td>{{ isset($daily['date']) ? $daily['date'] : 'N/A' }}</td>
-                    <td class="text-right">
-                        @if(isset($daily['revenue']))
-                            ${{ number_format((float)$daily['revenue'], 2) }}
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                    <td class="text-right">{{ isset($daily['orders']) ? number_format((int)$daily['orders']) : 'N/A' }}</td>
-                    <td class="text-right">{{ isset($daily['items']) ? number_format((int)$daily['items']) : 'N/A' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <h2>Breakdown by Supermarket</h2>
+        @foreach($supermarketBreakdownList as $supermarketData)
+            <div class="supermarket-breakdown">
+                <h3>
+                    {{ $supermarketData['supermarket'] ?? 'Unknown Supermarket' }} - 
+                    Total: ${{ number_format((float)($supermarketData['total_money'] ?? 0), 2) }}
+                </h3>
+                @if(isset($supermarketData['report']) && count($supermarketData['report']) > 0)
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>ID</th>
+                            <th class="text-right">Unit Price</th>
+                            <th class="text-right">Quantity Sold</th>
+                            <th class="text-right">Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($supermarketData['report'] as $item)
+                        <tr>
+                            <td>{{ $item['name'] ?? 'N/A' }}</td>
+                            <td>{{ $item['id'] ?? 'N/A' }}</td>
+                            <td class="text-right">${{ number_format((float)($item['price'] ?? 0), 2) }}</td>
+                            <td class="text-right">{{ number_format((int)($item['total_quantity'] ?? ($item['quantity'] ?? 0))) }}</td>
+                            <td class="text-right">${{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                <p class="no-data">No sales data for this supermarket.</p>
+                @endif
+            </div>
+        @endforeach
+    </div>
+    @elseif($isGeneralAdminReport)
+    <div class="table-section">
+        <h2>Breakdown by Supermarket</h2>
+        <p class="no-data">No supermarket breakdown data available.</p>
     </div>
     @endif
 
     <div class="footer">
-        <p>This report was automatically generated from the sales data.</p>
-        <p>Report ID: {{ isset($report->id) ? $report->id : 'Unknown' }} | Generated: {{ $currentDateTime }}</p>
+        This is an automatically generated report. &copy; {{ date('Y') }} Hypermarket Sales Management System.
     </div>
 </body>
 </html>

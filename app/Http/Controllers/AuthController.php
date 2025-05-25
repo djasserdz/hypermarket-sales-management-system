@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Filament\Resources\UserResource;
 use App\Http\Resources\User as ResourcesUser;
-use App\Models\cashRegister;
-use App\Models\shift;
+use App\Models\CashRegister;
+use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +37,7 @@ class AuthController extends Controller
     }
 
     if($user->role() == 'cashier'){
-        $cash_register = cashRegister::find($request->cash_register_id);
+        $cash_register = CashRegister::find($request->cash_register_id);
         if (!$cash_register) {
             return response()->json(['error' => 'Cash register not found']);
         }
@@ -66,7 +66,7 @@ class AuthController extends Controller
 public function logout(Request $request) {
     $user = $request->user();
          
-    $latestShift=shift::where('user_id',$user->id)->where('end_at',null)->first();
+    $latestShift=Shift::where('user_id',$user->id)->where('end_at',null)->first();
 
     if ($latestShift) {
       DB::table('shifts')

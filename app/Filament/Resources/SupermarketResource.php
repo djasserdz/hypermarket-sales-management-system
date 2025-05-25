@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SupermarketResource\Pages;
 use App\Filament\Resources\SupermarketResource\RelationManagers;
-use App\Models\supermarket;
+use App\Models\Supermarket;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Forms;
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SupermarketResource extends Resource
 {
-    protected static ?string $model = supermarket::class;
+    protected static ?string $model = Supermarket::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 

@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('supermarket_id')->constrained('supermarkets', 'id')->cascadeOnDelete();
-            $table->string('street_name');
+            $table->string('street_address');
+            $table->string('city');
             $table->string("state");
-            $table->float('latitude');
-            $table->float('longitude');
+            $table->double('latitude');
+            $table->double('longitude');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('locations');
     }
 };

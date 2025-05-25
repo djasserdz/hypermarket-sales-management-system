@@ -2,14 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\CashRegister;
+use App\Models\Stock;
 use App\Models\Supermarket;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CashRegister>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Stock>
  */
-class CashRegisterFactory extends Factory
+class StockFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,9 +20,9 @@ class CashRegisterFactory extends Factory
     public function definition(): array
     {
         return [
-            // 'name' => 'Cash Register ' . fake()->unique()->randomNumber(2), // Removed as column doesn't exist
             'supermarket_id' => Supermarket::factory(),
-            // 'is_active' => fake()->boolean(), // Removed as column doesn't exist
+            'product_id' => Product::factory(),
+            'quantity' => fake()->numberBetween(50, 500),
         ];
     }
-}
+} 

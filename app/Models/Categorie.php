@@ -15,16 +15,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\product> $products
  * @property-read int|null $products_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|categorie whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Categorie whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class categorie extends Model
+class Categorie extends Model
 {
     /** @use HasFactory<\Database\Factories\CategorieFactory> */
     use HasFactory;
@@ -38,4 +38,4 @@ class categorie extends Model
     {
         return $this->hasMany(product::class, 'category_id');
     }
-}
+} 

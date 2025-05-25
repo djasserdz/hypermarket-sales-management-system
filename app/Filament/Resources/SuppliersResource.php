@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SuppliersResource\Pages;
 use App\Filament\Resources\SuppliersResource\RelationManagers;
-use App\Models\supplier;
+use App\Models\Supplier;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\TextInput;
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SuppliersResource extends Resource
 {
-    protected static ?string $model = supplier::class;
+    protected static ?string $model = Supplier::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
 

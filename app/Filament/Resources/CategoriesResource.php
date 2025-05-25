@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CategoriesResource\Pages;
-use App\Models\categorie;
+use App\Models\Categorie;
 use Filament\Resources\Resource;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Card;
@@ -17,7 +17,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 
 class CategoriesResource extends Resource
 {
-    protected static ?string $model = categorie::class;
+    protected static ?string $model = Categorie::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-queue-list';
 
