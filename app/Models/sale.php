@@ -15,17 +15,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $payment_method
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\cashRegister $cashRegister
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\product> $products
+ * @property-read \App\Models\CashRegister $cashRegister
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale whereCashRegisterId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale wherePaymentMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|sale whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale whereCashRegisterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Sale whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class Sale extends Model
@@ -64,6 +64,4 @@ class Sale extends Model
         })
         ->first();
     }
-
-
-}
+} 
