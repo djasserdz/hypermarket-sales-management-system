@@ -32,6 +32,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'dj@gmail.com',
             'password' => Hash::make('dj'), // Use Hash::make for password
         ]);
+        User::factory()->manager()
+            ->create([
+                'name'=>'hichem',
+                'email'=>'hichem@gmail.com',
+                'password' => Hash::make('hichem'),
+            ]);
 
         // Create additional admin users
         User::factory()->count(2)->admin()->create();
@@ -39,6 +45,8 @@ class DatabaseSeeder extends Seeder
         // Create cashier users
         User::factory()->count(10)->cashier()->create();
 
+        // Create manager users
+        User::factory()->count(3)->manager()->create();
         // Create predefined categories
         $definedCategories = [
             'Fresh Produce', 'Dairy & Eggs', 'Bakery & Bread', 'Meat & Seafood', 'Pantry Staples',

@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 12.8.1.
+ * Generated for Laravel 12.15.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1620,15 +1620,11 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Finds an entry of the container by its identifier and returns it.
+         * {@inheritdoc}
          *
          * @template TClass of object
          * @param string|class-string<TClass> $id
          * @return ($id is class-string<TClass> ? TClass : mixed)
-         * @param string $id Identifier of the entry to look for.
-         * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
-         * @throws ContainerExceptionInterface Error while retrieving the entry.
-         * @return mixed Entry.
          * @static 
          */
         public static function get($id)
@@ -1742,6 +1738,19 @@ namespace Illuminate\Support\Facades {
             //Method inherited from \Illuminate\Container\Container 
             /** @var \Illuminate\Foundation\Application $instance */
             $instance->fireAfterResolvingAttributeCallbacks($attributes, $object);
+        }
+
+        /**
+         * Get the name of the binding the container is currently resolving.
+         *
+         * @return class-string|string|null 
+         * @static 
+         */
+        public static function currentlyResolving()
+        {
+            //Method inherited from \Illuminate\Container\Container 
+            /** @var \Illuminate\Foundation\Application $instance */
+            return $instance->currentlyResolving();
         }
 
         /**
@@ -3327,6 +3336,20 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Execute the given callback using a custom echo format.
+         *
+         * @param string $format
+         * @param callable $callback
+         * @return string 
+         * @static 
+         */
+        public static function usingEchoFormat($format, $callback)
+        {
+            /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
+            return $instance->usingEchoFormat($format, $callback);
+        }
+
+        /**
          * Set the echo format to be used by the compiler.
          *
          * @param string $format
@@ -3947,6 +3970,30 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Allow dispatching after responses.
+         *
+         * @return \Illuminate\Bus\Dispatcher 
+         * @static 
+         */
+        public static function withDispatchingAfterResponses()
+        {
+            /** @var \Illuminate\Bus\Dispatcher $instance */
+            return $instance->withDispatchingAfterResponses();
+        }
+
+        /**
+         * Disable dispatching after responses.
+         *
+         * @return \Illuminate\Bus\Dispatcher 
+         * @static 
+         */
+        public static function withoutDispatchingAfterResponses()
+        {
+            /** @var \Illuminate\Bus\Dispatcher $instance */
+            return $instance->withoutDispatchingAfterResponses();
+        }
+
+        /**
          * Specify the jobs that should be dispatched instead of faked.
          *
          * @param array|string $jobsToDispatch
@@ -4376,6 +4423,19 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Cache\CacheManager $instance */
             return $instance->driver($driver);
+        }
+
+        /**
+         * Get a memoized cache driver instance.
+         *
+         * @param string|null $driver
+         * @return \Illuminate\Contracts\Cache\Repository 
+         * @static 
+         */
+        public static function memo($driver = null)
+        {
+            /** @var \Illuminate\Cache\CacheManager $instance */
+            return $instance->memo($driver);
         }
 
         /**
@@ -5088,7 +5148,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function lock($name, $seconds = 0, $owner = null)
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             return $instance->lock($name, $seconds, $owner);
         }
 
@@ -5102,8 +5162,21 @@ namespace Illuminate\Support\Facades {
          */
         public static function restoreLock($name, $owner)
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             return $instance->restoreLock($name, $owner);
+        }
+
+        /**
+         * Remove an item from the cache if it is expired.
+         *
+         * @param string $key
+         * @return bool 
+         * @static 
+         */
+        public static function forgetIfExpired($key)
+        {
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            return $instance->forgetIfExpired($key);
         }
 
         /**
@@ -5114,82 +5187,33 @@ namespace Illuminate\Support\Facades {
          */
         public static function flush()
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             return $instance->flush();
         }
 
         /**
-         * Remove all expired tag set entries.
+         * Get the underlying database connection.
          *
-         * @return void 
+         * @return \Illuminate\Database\SQLiteConnection 
          * @static 
          */
-        public static function flushStaleTags()
+        public static function getConnection()
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
-            $instance->flushStaleTags();
-        }
-
-        /**
-         * Get the Redis connection instance.
-         *
-         * @return \Illuminate\Redis\Connections\Connection 
-         * @static 
-         */
-        public static function connection()
-        {
-            /** @var \Illuminate\Cache\RedisStore $instance */
-            return $instance->connection();
-        }
-
-        /**
-         * Get the Redis connection instance that should be used to manage locks.
-         *
-         * @return \Illuminate\Redis\Connections\Connection 
-         * @static 
-         */
-        public static function lockConnection()
-        {
-            /** @var \Illuminate\Cache\RedisStore $instance */
-            return $instance->lockConnection();
-        }
-
-        /**
-         * Specify the name of the connection that should be used to store data.
-         *
-         * @param string $connection
-         * @return void 
-         * @static 
-         */
-        public static function setConnection($connection)
-        {
-            /** @var \Illuminate\Cache\RedisStore $instance */
-            $instance->setConnection($connection);
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            return $instance->getConnection();
         }
 
         /**
          * Specify the name of the connection that should be used to manage locks.
          *
-         * @param string $connection
-         * @return \Illuminate\Cache\RedisStore 
+         * @param \Illuminate\Database\ConnectionInterface $connection
+         * @return \Illuminate\Cache\DatabaseStore 
          * @static 
          */
         public static function setLockConnection($connection)
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             return $instance->setLockConnection($connection);
-        }
-
-        /**
-         * Get the Redis database instance.
-         *
-         * @return \Illuminate\Contracts\Redis\Factory 
-         * @static 
-         */
-        public static function getRedis()
-        {
-            /** @var \Illuminate\Cache\RedisStore $instance */
-            return $instance->getRedis();
         }
 
         /**
@@ -5200,7 +5224,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function getPrefix()
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             return $instance->getPrefix();
         }
 
@@ -5213,7 +5237,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function setPrefix($prefix)
         {
-            /** @var \Illuminate\Cache\RedisStore $instance */
+            /** @var \Illuminate\Cache\DatabaseStore $instance */
             $instance->setPrefix($prefix);
         }
 
@@ -5827,6 +5851,32 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Log\Context\Repository $instance */
             return $instance->onlyHidden($keys);
+        }
+
+        /**
+         * Retrieve all values except those with the given keys.
+         *
+         * @param array<int, string> $keys
+         * @return array<string, mixed> 
+         * @static 
+         */
+        public static function except($keys)
+        {
+            /** @var \Illuminate\Log\Context\Repository $instance */
+            return $instance->except($keys);
+        }
+
+        /**
+         * Retrieve all hidden values except those with the given keys.
+         *
+         * @param array<int, string> $keys
+         * @return array<string, mixed> 
+         * @static 
+         */
+        public static function exceptHidden($keys)
+        {
+            /** @var \Illuminate\Log\Context\Repository $instance */
+            return $instance->exceptHidden($keys);
         }
 
         /**
@@ -6456,145 +6506,6 @@ namespace Illuminate\Support\Facades {
         public static function flushMacros()
         {
             \Illuminate\Cookie\CookieJar::flushMacros();
-        }
-
-            }
-    /**
-     * 
-     *
-     * @see \Illuminate\Encryption\Encrypter
-     */
-    class Crypt {
-        /**
-         * Determine if the given key and cipher combination is valid.
-         *
-         * @param string $key
-         * @param string $cipher
-         * @return bool 
-         * @static 
-         */
-        public static function supported($key, $cipher)
-        {
-            return \Illuminate\Encryption\Encrypter::supported($key, $cipher);
-        }
-
-        /**
-         * Create a new encryption key for the given cipher.
-         *
-         * @param string $cipher
-         * @return string 
-         * @static 
-         */
-        public static function generateKey($cipher)
-        {
-            return \Illuminate\Encryption\Encrypter::generateKey($cipher);
-        }
-
-        /**
-         * Encrypt the given value.
-         *
-         * @param mixed $value
-         * @param bool $serialize
-         * @return string 
-         * @throws \Illuminate\Contracts\Encryption\EncryptException
-         * @static 
-         */
-        public static function encrypt($value, $serialize = true)
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->encrypt($value, $serialize);
-        }
-
-        /**
-         * Encrypt a string without serialization.
-         *
-         * @param string $value
-         * @return string 
-         * @throws \Illuminate\Contracts\Encryption\EncryptException
-         * @static 
-         */
-        public static function encryptString($value)
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->encryptString($value);
-        }
-
-        /**
-         * Decrypt the given value.
-         *
-         * @param string $payload
-         * @param bool $unserialize
-         * @return mixed 
-         * @throws \Illuminate\Contracts\Encryption\DecryptException
-         * @static 
-         */
-        public static function decrypt($payload, $unserialize = true)
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->decrypt($payload, $unserialize);
-        }
-
-        /**
-         * Decrypt the given string without unserialization.
-         *
-         * @param string $payload
-         * @return string 
-         * @throws \Illuminate\Contracts\Encryption\DecryptException
-         * @static 
-         */
-        public static function decryptString($payload)
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->decryptString($payload);
-        }
-
-        /**
-         * Get the encryption key that the encrypter is currently using.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getKey()
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->getKey();
-        }
-
-        /**
-         * Get the current encryption key and all previous encryption keys.
-         *
-         * @return array 
-         * @static 
-         */
-        public static function getAllKeys()
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->getAllKeys();
-        }
-
-        /**
-         * Get the previous encryption keys.
-         *
-         * @return array 
-         * @static 
-         */
-        public static function getPreviousKeys()
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->getPreviousKeys();
-        }
-
-        /**
-         * Set the previous / legacy encryption keys that should be utilized if decryption fails.
-         *
-         * @param array $keys
-         * @return \Illuminate\Encryption\Encrypter 
-         * @static 
-         */
-        public static function previousKeys($keys)
-        {
-            /** @var \Illuminate\Encryption\Encrypter $instance */
-            return $instance->previousKeys($keys);
         }
 
             }
@@ -10098,7 +10009,7 @@ namespace Illuminate\Support\Facades {
          * Create a new connection exception for use during stubbing.
          *
          * @param string|null $message
-         * @return \GuzzleHttp\Promise\PromiseInterface 
+         * @return \Closure(\Illuminate\Http\Client\Request): \GuzzleHttp\Promise\PromiseInterface
          * @static 
          */
         public static function failedConnection($message = null)
@@ -10122,7 +10033,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a stub callable that will intercept requests and be able to return stub responses.
          *
-         * @param callable|array|null $callback
+         * @param callable|array<string, mixed>|null $callback
          * @return \Illuminate\Http\Client\Factory 
          * @static 
          */
@@ -10149,7 +10060,7 @@ namespace Illuminate\Support\Facades {
          * Stub the given URL using the given callback.
          *
          * @param string $url
-         * @param \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface|callable|int|string|array $callback
+         * @param \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface|callable|int|string|array|\Illuminate\Http\Client\ResponseSequence $callback
          * @return \Illuminate\Http\Client\Factory 
          * @static 
          */
@@ -10225,7 +10136,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Assert that a request / response pair was recorded matching a given truth test.
          *
-         * @param callable $callback
+         * @param callable|(\Closure(\Illuminate\Http\Client\Request, \Illuminate\Http\Client\Response|null): bool) $callback
          * @return void 
          * @static 
          */
@@ -10238,7 +10149,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Assert that the given request was sent in the given order.
          *
-         * @param array $callbacks
+         * @param list<string|(\Closure(\Illuminate\Http\Client\Request, \Illuminate\Http\Client\Response|null): bool)|callable> $callbacks
          * @return void 
          * @static 
          */
@@ -10251,7 +10162,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Assert that a request / response pair was not recorded matching a given truth test.
          *
-         * @param callable $callback
+         * @param callable|(\Closure(\Illuminate\Http\Client\Request, \Illuminate\Http\Client\Response|null): bool) $callback
          * @return void 
          * @static 
          */
@@ -10301,8 +10212,8 @@ namespace Illuminate\Support\Facades {
         /**
          * Get a collection of the request / response pairs matching the given truth test.
          *
-         * @param callable $callback
-         * @return \Illuminate\Support\Collection 
+         * @param (\Closure(\Illuminate\Http\Client\Request, \Illuminate\Http\Client\Response|null): bool)|callable $callback
+         * @return \Illuminate\Support\Collection<int, array{0: \Illuminate\Http\Client\Request, 1: \Illuminate\Http\Client\Response|null}>
          * @static 
          */
         public static function recorded($callback = null)
@@ -11613,423 +11524,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @see \Illuminate\Notifications\ChannelManager
-     * @see \Illuminate\Support\Testing\Fakes\NotificationFake
-     */
-    class Notification {
-        /**
-         * Send the given notification to the given notifiable entities.
-         *
-         * @param \Illuminate\Support\Collection|array|mixed $notifiables
-         * @param mixed $notification
-         * @return void 
-         * @static 
-         */
-        public static function send($notifiables, $notification)
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            $instance->send($notifiables, $notification);
-        }
-
-        /**
-         * Send the given notification immediately.
-         *
-         * @param \Illuminate\Support\Collection|array|mixed $notifiables
-         * @param mixed $notification
-         * @param array|null $channels
-         * @return void 
-         * @static 
-         */
-        public static function sendNow($notifiables, $notification, $channels = null)
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            $instance->sendNow($notifiables, $notification, $channels);
-        }
-
-        /**
-         * Get a channel instance.
-         *
-         * @param string|null $name
-         * @return mixed 
-         * @static 
-         */
-        public static function channel($name = null)
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->channel($name);
-        }
-
-        /**
-         * Get the default channel driver name.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function getDefaultDriver()
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->getDefaultDriver();
-        }
-
-        /**
-         * Get the default channel driver name.
-         *
-         * @return string 
-         * @static 
-         */
-        public static function deliversVia()
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->deliversVia();
-        }
-
-        /**
-         * Set the default channel driver name.
-         *
-         * @param string $channel
-         * @return void 
-         * @static 
-         */
-        public static function deliverVia($channel)
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            $instance->deliverVia($channel);
-        }
-
-        /**
-         * Set the locale of notifications.
-         *
-         * @param string $locale
-         * @return \Illuminate\Notifications\ChannelManager 
-         * @static 
-         */
-        public static function locale($locale)
-        {
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->locale($locale);
-        }
-
-        /**
-         * Get a driver instance.
-         *
-         * @param string|null $driver
-         * @return mixed 
-         * @throws \InvalidArgumentException
-         * @static 
-         */
-        public static function driver($driver = null)
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->driver($driver);
-        }
-
-        /**
-         * Register a custom driver creator Closure.
-         *
-         * @param string $driver
-         * @param \Closure $callback
-         * @return \Illuminate\Notifications\ChannelManager 
-         * @static 
-         */
-        public static function extend($driver, $callback)
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->extend($driver, $callback);
-        }
-
-        /**
-         * Get all of the created "drivers".
-         *
-         * @return array 
-         * @static 
-         */
-        public static function getDrivers()
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->getDrivers();
-        }
-
-        /**
-         * Get the container instance used by the manager.
-         *
-         * @return \Illuminate\Contracts\Container\Container 
-         * @static 
-         */
-        public static function getContainer()
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->getContainer();
-        }
-
-        /**
-         * Set the container instance used by the manager.
-         *
-         * @param \Illuminate\Contracts\Container\Container $container
-         * @return \Illuminate\Notifications\ChannelManager 
-         * @static 
-         */
-        public static function setContainer($container)
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->setContainer($container);
-        }
-
-        /**
-         * Forget all of the resolved driver instances.
-         *
-         * @return \Illuminate\Notifications\ChannelManager 
-         * @static 
-         */
-        public static function forgetDrivers()
-        {
-            //Method inherited from \Illuminate\Support\Manager 
-            /** @var \Illuminate\Notifications\ChannelManager $instance */
-            return $instance->forgetDrivers();
-        }
-
-        /**
-         * Assert if a notification was sent on-demand based on a truth-test callback.
-         *
-         * @param string|\Closure $notification
-         * @param callable|null $callback
-         * @return void 
-         * @throws \Exception
-         * @static 
-         */
-        public static function assertSentOnDemand($notification, $callback = null)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertSentOnDemand($notification, $callback);
-        }
-
-        /**
-         * Assert if a notification was sent based on a truth-test callback.
-         *
-         * @param mixed $notifiable
-         * @param string|\Closure $notification
-         * @param callable|null $callback
-         * @return void 
-         * @throws \Exception
-         * @static 
-         */
-        public static function assertSentTo($notifiable, $notification, $callback = null)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertSentTo($notifiable, $notification, $callback);
-        }
-
-        /**
-         * Assert if a notification was sent on-demand a number of times.
-         *
-         * @param string $notification
-         * @param int $times
-         * @return void 
-         * @static 
-         */
-        public static function assertSentOnDemandTimes($notification, $times = 1)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertSentOnDemandTimes($notification, $times);
-        }
-
-        /**
-         * Assert if a notification was sent a number of times.
-         *
-         * @param mixed $notifiable
-         * @param string $notification
-         * @param int $times
-         * @return void 
-         * @static 
-         */
-        public static function assertSentToTimes($notifiable, $notification, $times = 1)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertSentToTimes($notifiable, $notification, $times);
-        }
-
-        /**
-         * Determine if a notification was sent based on a truth-test callback.
-         *
-         * @param mixed $notifiable
-         * @param string|\Closure $notification
-         * @param callable|null $callback
-         * @return void 
-         * @throws \Exception
-         * @static 
-         */
-        public static function assertNotSentTo($notifiable, $notification, $callback = null)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertNotSentTo($notifiable, $notification, $callback);
-        }
-
-        /**
-         * Assert that no notifications were sent.
-         *
-         * @return void 
-         * @static 
-         */
-        public static function assertNothingSent()
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertNothingSent();
-        }
-
-        /**
-         * Assert that no notifications were sent to the given notifiable.
-         *
-         * @param mixed $notifiable
-         * @return void 
-         * @throws \Exception
-         * @static 
-         */
-        public static function assertNothingSentTo($notifiable)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertNothingSentTo($notifiable);
-        }
-
-        /**
-         * Assert the total amount of times a notification was sent.
-         *
-         * @param string $notification
-         * @param int $expectedCount
-         * @return void 
-         * @static 
-         */
-        public static function assertSentTimes($notification, $expectedCount)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertSentTimes($notification, $expectedCount);
-        }
-
-        /**
-         * Assert the total count of notification that were sent.
-         *
-         * @param int $expectedCount
-         * @return void 
-         * @static 
-         */
-        public static function assertCount($expectedCount)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            $instance->assertCount($expectedCount);
-        }
-
-        /**
-         * Get all of the notifications matching a truth-test callback.
-         *
-         * @param mixed $notifiable
-         * @param string $notification
-         * @param callable|null $callback
-         * @return \Illuminate\Support\Collection 
-         * @static 
-         */
-        public static function sent($notifiable, $notification, $callback = null)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            return $instance->sent($notifiable, $notification, $callback);
-        }
-
-        /**
-         * Determine if there are more notifications left to inspect.
-         *
-         * @param mixed $notifiable
-         * @param string $notification
-         * @return bool 
-         * @static 
-         */
-        public static function hasSent($notifiable, $notification)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            return $instance->hasSent($notifiable, $notification);
-        }
-
-        /**
-         * Specify if notification should be serialized and restored when being "pushed" to the queue.
-         *
-         * @param bool $serializeAndRestore
-         * @return \Illuminate\Support\Testing\Fakes\NotificationFake 
-         * @static 
-         */
-        public static function serializeAndRestore($serializeAndRestore = true)
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            return $instance->serializeAndRestore($serializeAndRestore);
-        }
-
-        /**
-         * Get the notifications that have been sent.
-         *
-         * @return array 
-         * @static 
-         */
-        public static function sentNotifications()
-        {
-            /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
-            return $instance->sentNotifications();
-        }
-
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @param-closure-this static  $macro
-         * @return void 
-         * @static 
-         */
-        public static function macro($name, $macro)
-        {
-            \Illuminate\Support\Testing\Fakes\NotificationFake::macro($name, $macro);
-        }
-
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @param bool $replace
-         * @return void 
-         * @throws \ReflectionException
-         * @static 
-         */
-        public static function mixin($mixin, $replace = true)
-        {
-            \Illuminate\Support\Testing\Fakes\NotificationFake::mixin($mixin, $replace);
-        }
-
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool 
-         * @static 
-         */
-        public static function hasMacro($name)
-        {
-            return \Illuminate\Support\Testing\Fakes\NotificationFake::hasMacro($name);
-        }
-
-        /**
-         * Flush the existing macros.
-         *
-         * @return void 
-         * @static 
-         */
-        public static function flushMacros()
-        {
-            \Illuminate\Support\Testing\Fakes\NotificationFake::flushMacros();
-        }
-
-            }
-    /**
-     * 
-     *
      * @method static string sendResetLink(array $credentials, \Closure|null $callback = null)
      * @method static mixed reset(array $credentials, \Closure $callback)
      * @method static \Illuminate\Contracts\Auth\CanResetPassword|null getUser(array $credentials)
@@ -12037,6 +11531,7 @@ namespace Illuminate\Support\Facades {
      * @method static void deleteToken(\Illuminate\Contracts\Auth\CanResetPassword $user)
      * @method static bool tokenExists(\Illuminate\Contracts\Auth\CanResetPassword $user, string $token)
      * @method static \Illuminate\Auth\Passwords\TokenRepositoryInterface getRepository()
+     * @method static \Illuminate\Support\Timebox getTimebox()
      * @see \Illuminate\Auth\Passwords\PasswordBrokerManager
      * @see \Illuminate\Auth\Passwords\PasswordBroker
      */
@@ -12077,331 +11572,6 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Auth\Passwords\PasswordBrokerManager $instance */
             $instance->setDefaultDriver($name);
-        }
-
-            }
-    /**
-     * 
-     *
-     * @method static \Illuminate\Process\PendingProcess command(array|string $command)
-     * @method static \Illuminate\Process\PendingProcess path(string $path)
-     * @method static \Illuminate\Process\PendingProcess timeout(int $timeout)
-     * @method static \Illuminate\Process\PendingProcess idleTimeout(int $timeout)
-     * @method static \Illuminate\Process\PendingProcess forever()
-     * @method static \Illuminate\Process\PendingProcess env(array $environment)
-     * @method static \Illuminate\Process\PendingProcess input(\Traversable|resource|string|int|float|bool|null $input)
-     * @method static \Illuminate\Process\PendingProcess quietly()
-     * @method static \Illuminate\Process\PendingProcess tty(bool $tty = true)
-     * @method static \Illuminate\Process\PendingProcess options(array $options)
-     * @method static \Illuminate\Contracts\Process\ProcessResult run(array|string|null $command = null, callable|null $output = null)
-     * @method static \Illuminate\Process\InvokedProcess start(array|string|null $command = null, callable|null $output = null)
-     * @method static bool supportsTty()
-     * @method static \Illuminate\Process\PendingProcess withFakeHandlers(array $fakeHandlers)
-     * @method static \Illuminate\Process\PendingProcess|mixed when(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
-     * @method static \Illuminate\Process\PendingProcess|mixed unless(\Closure|mixed|null $value = null, callable|null $callback = null, callable|null $default = null)
-     * @see \Illuminate\Process\PendingProcess
-     * @see \Illuminate\Process\Factory
-     */
-    class Process {
-        /**
-         * Create a new fake process response for testing purposes.
-         *
-         * @param array|string $output
-         * @param array|string $errorOutput
-         * @param int $exitCode
-         * @return \Illuminate\Process\FakeProcessResult 
-         * @static 
-         */
-        public static function result($output = '', $errorOutput = '', $exitCode = 0)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->result($output, $errorOutput, $exitCode);
-        }
-
-        /**
-         * Begin describing a fake process lifecycle.
-         *
-         * @return \Illuminate\Process\FakeProcessDescription 
-         * @static 
-         */
-        public static function describe()
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->describe();
-        }
-
-        /**
-         * Begin describing a fake process sequence.
-         *
-         * @param array $processes
-         * @return \Illuminate\Process\FakeProcessSequence 
-         * @static 
-         */
-        public static function sequence($processes = [])
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->sequence($processes);
-        }
-
-        /**
-         * Indicate that the process factory should fake processes.
-         *
-         * @param \Closure|array|null $callback
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function fake($callback = null)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->fake($callback);
-        }
-
-        /**
-         * Determine if the process factory has fake process handlers and is recording processes.
-         *
-         * @return bool 
-         * @static 
-         */
-        public static function isRecording()
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->isRecording();
-        }
-
-        /**
-         * Record the given process if processes should be recorded.
-         *
-         * @param \Illuminate\Process\PendingProcess $process
-         * @param \Illuminate\Contracts\Process\ProcessResult $result
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function recordIfRecording($process, $result)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->recordIfRecording($process, $result);
-        }
-
-        /**
-         * Record the given process.
-         *
-         * @param \Illuminate\Process\PendingProcess $process
-         * @param \Illuminate\Contracts\Process\ProcessResult $result
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function record($process, $result)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->record($process, $result);
-        }
-
-        /**
-         * Indicate that an exception should be thrown if any process is not faked.
-         *
-         * @param bool $prevent
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function preventStrayProcesses($prevent = true)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->preventStrayProcesses($prevent);
-        }
-
-        /**
-         * Determine if stray processes are being prevented.
-         *
-         * @return bool 
-         * @static 
-         */
-        public static function preventingStrayProcesses()
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->preventingStrayProcesses();
-        }
-
-        /**
-         * Assert that a process was recorded matching a given truth test.
-         *
-         * @param \Closure|string $callback
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function assertRan($callback)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->assertRan($callback);
-        }
-
-        /**
-         * Assert that a process was recorded a given number of times matching a given truth test.
-         *
-         * @param \Closure|string $callback
-         * @param int $times
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function assertRanTimes($callback, $times = 1)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->assertRanTimes($callback, $times);
-        }
-
-        /**
-         * Assert that a process was not recorded matching a given truth test.
-         *
-         * @param \Closure|string $callback
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function assertNotRan($callback)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->assertNotRan($callback);
-        }
-
-        /**
-         * Assert that a process was not recorded matching a given truth test.
-         *
-         * @param \Closure|string $callback
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function assertDidntRun($callback)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->assertDidntRun($callback);
-        }
-
-        /**
-         * Assert that no processes were recorded.
-         *
-         * @return \Illuminate\Process\Factory 
-         * @static 
-         */
-        public static function assertNothingRan()
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->assertNothingRan();
-        }
-
-        /**
-         * Start defining a pool of processes.
-         *
-         * @param callable $callback
-         * @return \Illuminate\Process\Pool 
-         * @static 
-         */
-        public static function pool($callback)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->pool($callback);
-        }
-
-        /**
-         * Start defining a series of piped processes.
-         *
-         * @param callable|array $callback
-         * @return \Illuminate\Contracts\Process\ProcessResult 
-         * @static 
-         */
-        public static function pipe($callback, $output = null)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->pipe($callback, $output);
-        }
-
-        /**
-         * Run a pool of processes and wait for them to finish executing.
-         *
-         * @param callable $callback
-         * @param callable|null $output
-         * @return \Illuminate\Process\ProcessPoolResults 
-         * @static 
-         */
-        public static function concurrently($callback, $output = null)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->concurrently($callback, $output);
-        }
-
-        /**
-         * Create a new pending process associated with this factory.
-         *
-         * @return \Illuminate\Process\PendingProcess 
-         * @static 
-         */
-        public static function newPendingProcess()
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->newPendingProcess();
-        }
-
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @param-closure-this static  $macro
-         * @return void 
-         * @static 
-         */
-        public static function macro($name, $macro)
-        {
-            \Illuminate\Process\Factory::macro($name, $macro);
-        }
-
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @param bool $replace
-         * @return void 
-         * @throws \ReflectionException
-         * @static 
-         */
-        public static function mixin($mixin, $replace = true)
-        {
-            \Illuminate\Process\Factory::mixin($mixin, $replace);
-        }
-
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool 
-         * @static 
-         */
-        public static function hasMacro($name)
-        {
-            return \Illuminate\Process\Factory::hasMacro($name);
-        }
-
-        /**
-         * Flush the existing macros.
-         *
-         * @return void 
-         * @static 
-         */
-        public static function flushMacros()
-        {
-            \Illuminate\Process\Factory::flushMacros();
-        }
-
-        /**
-         * Dynamically handle calls to the class.
-         *
-         * @param string $method
-         * @param array $parameters
-         * @return mixed 
-         * @throws \BadMethodCallException
-         * @static 
-         */
-        public static function macroCall($method, $parameters)
-        {
-            /** @var \Illuminate\Process\Factory $instance */
-            return $instance->macroCall($method, $parameters);
         }
 
             }
@@ -13196,7 +12366,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param int $maxAttempts
          * @param \Closure $callback
-         * @param int $decaySeconds
+         * @param \DateTimeInterface|\DateInterval|int $decaySeconds
          * @return mixed 
          * @static 
          */
@@ -13224,7 +12394,7 @@ namespace Illuminate\Support\Facades {
          * Increment (by 1) the counter for a given key for a given decay time.
          *
          * @param string $key
-         * @param int $decaySeconds
+         * @param \DateTimeInterface|\DateInterval|int $decaySeconds
          * @return int 
          * @static 
          */
@@ -13238,7 +12408,7 @@ namespace Illuminate\Support\Facades {
          * Increment the counter for a given key for a given decay time by a given amount.
          *
          * @param string $key
-         * @param int $decaySeconds
+         * @param \DateTimeInterface|\DateInterval|int $decaySeconds
          * @param int $amount
          * @return int 
          * @static 
@@ -13253,7 +12423,7 @@ namespace Illuminate\Support\Facades {
          * Decrement the counter for a given key for a given decay time by a given amount.
          *
          * @param string $key
-         * @param int $decaySeconds
+         * @param \DateTimeInterface|\DateInterval|int $decaySeconds
          * @param int $amount
          * @return int 
          * @static 
@@ -13642,7 +12812,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @method static array|(\Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile[]|null file(string|null $key = null, mixed $default = null)
      * @method static array validate(array $rules, ...$params)
      * @method static array validateWithBag(string $errorBag, array $rules, ...$params)
      * @method static bool hasValidSignature(bool $absolute = true)
@@ -14027,7 +13196,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|null $key
          * @param mixed $default
-         * @return \Symfony\Component\HttpFoundation\InputBag|mixed 
+         * @return ($key is null ? \Symfony\Component\HttpFoundation\InputBag : mixed)
          * @static 
          */
         public static function json($key = null, $default = null)
@@ -14177,7 +13346,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|null $param
          * @param mixed $default
-         * @return \Illuminate\Routing\Route|object|string|null 
+         * @return ($param is null ? \Illuminate\Routing\Route : object|string|null)
          * @static 
          */
         public static function route($param = null, $default = null)
@@ -15997,13 +15166,14 @@ namespace Illuminate\Support\Facades {
          * @template TEnum of \BackedEnum
          * @param string $key
          * @param class-string<TEnum> $enumClass
+         * @param TEnum|null $default
          * @return TEnum|null 
          * @static 
          */
-        public static function enum($key, $enumClass)
+        public static function enum($key, $enumClass, $default = null)
         {
             /** @var \Illuminate\Http\Request $instance */
-            return $instance->enum($key, $enumClass);
+            return $instance->enum($key, $enumClass, $default);
         }
 
         /**
@@ -17855,10 +17025,9 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get the tables that belong to the connection.
+         * 
          *
-         * @param string|string[]|null $schema
-         * @return array 
+         * @inheritDoc 
          * @static 
          */
         public static function getTables($schema = null)
@@ -17868,10 +17037,9 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get the views that belong to the connection.
+         * 
          *
-         * @param string|string[]|null $schema
-         * @return array 
+         * @inheritDoc 
          * @static 
          */
         public static function getViews($schema = null)
@@ -17881,10 +17049,9 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get the columns for a given table.
+         * 
          *
-         * @param string $table
-         * @return array 
+         * @inheritDoc 
          * @static 
          */
         public static function getColumns($table)
@@ -18021,7 +17188,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the schemas that belong to the connection.
          *
-         * @return array 
+         * @return \Illuminate\Database\Schema\list<array{name: string, path: string|null, default: bool}>
          * @static 
          */
         public static function getSchemas()
@@ -18064,7 +17231,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|string[]|null $schema
          * @param bool $schemaQualified
-         * @return array 
+         * @return list<string> 
          * @static 
          */
         public static function getTableListing($schema = null, $schemaQualified = true)
@@ -18078,7 +17245,7 @@ namespace Illuminate\Support\Facades {
          * Get the user-defined types that belong to the connection.
          *
          * @param string|string[]|null $schema
-         * @return array 
+         * @return \Illuminate\Database\Schema\list<array{name: string, schema: string, type: string, type: string, category: string, implicit: bool}>
          * @static 
          */
         public static function getTypes($schema = null)
@@ -18107,7 +17274,7 @@ namespace Illuminate\Support\Facades {
          * Determine if the given table has given columns.
          *
          * @param string $table
-         * @param array $columns
+         * @param array<string> $columns
          * @return bool 
          * @static 
          */
@@ -18170,7 +17337,7 @@ namespace Illuminate\Support\Facades {
          * Get the column listing for a given table.
          *
          * @param string $table
-         * @return array 
+         * @return list<string> 
          * @static 
          */
         public static function getColumnListing($table)
@@ -18184,7 +17351,7 @@ namespace Illuminate\Support\Facades {
          * Get the indexes for a given table.
          *
          * @param string $table
-         * @return array 
+         * @return \Illuminate\Database\Schema\list<array{name: string, columns: list<string>, type: string, unique: bool, primary: bool}>
          * @static 
          */
         public static function getIndexes($table)
@@ -18198,7 +17365,7 @@ namespace Illuminate\Support\Facades {
          * Get the names of the indexes for a given table.
          *
          * @param string $table
-         * @return array 
+         * @return list<string> 
          * @static 
          */
         public static function getIndexListing($table)
@@ -18300,7 +17467,7 @@ namespace Illuminate\Support\Facades {
          * Drop columns from a table schema.
          *
          * @param string $table
-         * @param string|array $columns
+         * @param string|array<string> $columns
          * @return void 
          * @static 
          */
@@ -18424,7 +17591,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the Schema Blueprint resolver callback.
          *
-         * @param \Closure $resolver
+         * @param \Closure(string, \Closure, string):  \Illuminate\Database\Schema\Blueprint|null  $resolver
          * @return void 
          * @static 
          */
@@ -22656,6 +21823,1700 @@ namespace Illuminate\Support\Facades {
         public static function flushMacros()
         {
             \Illuminate\Foundation\Vite::flushMacros();
+        }
+
+            }
+    }
+
+namespace Native\Laravel\Facades {
+    /**
+     * 
+     *
+     */
+    class Notification {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function new()
+        {
+            return \Native\Laravel\Notification::new();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function reference($reference)
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->reference($reference);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function title($title)
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->title($title);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function event($event)
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->event($event);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function hasReply($placeholder = '')
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->hasReply($placeholder);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function addAction($label)
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->addAction($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function message($body)
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->message($body);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function show()
+        {
+            /** @var \Native\Laravel\Notification $instance */
+            return $instance->show();
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Process {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function arch()
+        {
+            /** @var \Native\Laravel\Process $instance */
+            return $instance->arch();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function platform()
+        {
+            /** @var \Native\Laravel\Process $instance */
+            return $instance->platform();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function uptime()
+        {
+            /** @var \Native\Laravel\Process $instance */
+            return $instance->uptime();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function fresh()
+        {
+            /** @var \Native\Laravel\Process $instance */
+            return $instance->fresh();
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Dock {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function menu($menu)
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->menu($menu);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function show()
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->show();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function hide()
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->hide();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function icon($path)
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->icon($path);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function bounce($type = 'informational')
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->bounce($type);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function cancelBounce()
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->cancelBounce();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function badge($label = null)
+        {
+            /** @var \Native\Laravel\Dock $instance */
+            return $instance->badge($label);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Menu {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function make(...$items)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->make(...$items);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function create(...$items)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->create(...$items);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function default()
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->default();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function label($label, $hotkey = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->label($label, $hotkey);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function checkbox($label, $checked = false, $hotkey = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->checkbox($label, $checked, $hotkey);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function radio($label, $checked = false, $hotkey = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->radio($label, $checked, $hotkey);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function link($url, $label = null, $hotkey = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->link($url, $label, $hotkey);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function route($route, $label = null, $hotkey = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->route($route, $label, $hotkey);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function app()
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->app();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function file($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->file($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function edit($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->edit($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function view($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->view($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function window($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->window($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function separator()
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->separator();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function fullscreen($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->fullscreen($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function devTools($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->devTools($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function undo($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->undo($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function redo($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->redo($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function cut($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->cut($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function copy($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->copy($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function paste($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->paste($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function pasteAndMatchStyle($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->pasteAndMatchStyle($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function reload($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->reload($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function minimize($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->minimize($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function close($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->close($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function quit($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->quit($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function help($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->help($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function hide($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->hide($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function about($label = null)
+        {
+            /** @var \Native\Laravel\Menu\MenuBuilder $instance */
+            return $instance->about($label);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Shell {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function showInFolder($path)
+        {
+            /** @var \Native\Laravel\Shell $instance */
+            return $instance->showInFolder($path);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function openFile($path)
+        {
+            /** @var \Native\Laravel\Shell $instance */
+            return $instance->openFile($path);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function trashFile($path)
+        {
+            /** @var \Native\Laravel\Shell $instance */
+            return $instance->trashFile($path);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function openExternal($url)
+        {
+            /** @var \Native\Laravel\Shell $instance */
+            return $instance->openExternal($url);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Screen {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function cursorPosition()
+        {
+            /** @var \Native\Laravel\Screen $instance */
+            return $instance->cursorPosition();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function displays()
+        {
+            /** @var \Native\Laravel\Screen $instance */
+            return $instance->displays();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function primary()
+        {
+            /** @var \Native\Laravel\Screen $instance */
+            return $instance->primary();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function active()
+        {
+            /** @var \Native\Laravel\Screen $instance */
+            return $instance->active();
+        }
+
+        /**
+         * Returns the center of the screen where the mouse pointer is placed.
+         *
+         * @return array<string,int> 
+         * @static 
+         */
+        public static function getCenterOfActiveScreen()
+        {
+            /** @var \Native\Laravel\Screen $instance */
+            return $instance->getCenterOfActiveScreen();
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class System {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function canPromptTouchID()
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->canPromptTouchID();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function promptTouchID($reason)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->promptTouchID($reason);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function canEncrypt()
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->canEncrypt();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function encrypt($string)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->encrypt($string);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function decrypt($string)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->decrypt($string);
+        }
+
+        /**
+         * 
+         *
+         * @return array<\Native\Laravel\DataObjects\Printer> 
+         * @static 
+         */
+        public static function printers()
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->printers();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function print($html, $printer = null)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->print($html, $printer);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function printToPDF($html)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->printToPDF($html);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function timezone()
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->timezone();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function theme($theme = null)
+        {
+            /** @var \Native\Laravel\System $instance */
+            return $instance->theme($theme);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Window {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function open($id = 'main')
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->open($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function close($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->close($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function hide($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->hide($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function show($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->show($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function current()
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->current();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function all()
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->all();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function get($id)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->get($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function resize($width, $height, $id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->resize($width, $height, $id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function position($x, $y, $animated = false, $id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->position($x, $y, $animated, $id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function alwaysOnTop($alwaysOnTop = true, $id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->alwaysOnTop($alwaysOnTop, $id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function maximize($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->maximize($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function minimize($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->minimize($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function reload($id = null)
+        {
+            /** @var \Native\Laravel\Windows\WindowManager $instance */
+            return $instance->reload($id);
+        }
+
+        /**
+         * 
+         *
+         * @param array<int, Window> $windows
+         * @static 
+         */
+        public static function alwaysReturnWindows($windows)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->alwaysReturnWindows($windows);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $id
+         * @static 
+         */
+        public static function assertOpened($id)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertOpened($id);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $id
+         * @static 
+         */
+        public static function assertClosed($id)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertClosed($id);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $id
+         * @static 
+         */
+        public static function assertHidden($id)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertHidden($id);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $id
+         * @static 
+         */
+        public static function assertShown($id)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertShown($id);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertOpenedCount($expected)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertOpenedCount($expected);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertClosedCount($expected)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertClosedCount($expected);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertHiddenCount($expected)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertHiddenCount($expected);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertShownCount($expected)
+        {
+            /** @var \Native\Laravel\Fakes\WindowManagerFake $instance */
+            return $instance->assertShownCount($expected);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class MenuBar {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function create()
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->create();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function show()
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->show();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function hide()
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->hide();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function label($label)
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->label($label);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function tooltip($tooltip)
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->tooltip($tooltip);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function icon($icon)
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->icon($icon);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function resize($width, $height)
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->resize($width, $height);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function contextMenu($contextMenu)
+        {
+            /** @var \Native\Laravel\MenuBar\MenuBarManager $instance */
+            return $instance->contextMenu($contextMenu);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Settings {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function set($key, $value)
+        {
+            /** @var \Native\Laravel\Settings $instance */
+            return $instance->set($key, $value);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function get($key, $default = null)
+        {
+            /** @var \Native\Laravel\Settings $instance */
+            return $instance->get($key, $default);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function forget($key)
+        {
+            /** @var \Native\Laravel\Settings $instance */
+            return $instance->forget($key);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function clear()
+        {
+            /** @var \Native\Laravel\Settings $instance */
+            return $instance->clear();
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class Clipboard {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function clear()
+        {
+            /** @var \Native\Laravel\Clipboard $instance */
+            return $instance->clear();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function text($text = null)
+        {
+            /** @var \Native\Laravel\Clipboard $instance */
+            return $instance->text($text);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function html($html = null)
+        {
+            /** @var \Native\Laravel\Clipboard $instance */
+            return $instance->html($html);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function image($image = null)
+        {
+            /** @var \Native\Laravel\Clipboard $instance */
+            return $instance->image($image);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class ContextMenu {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function register($menu)
+        {
+            /** @var \Native\Laravel\ContextMenu $instance */
+            return $instance->register($menu);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function remove()
+        {
+            /** @var \Native\Laravel\ContextMenu $instance */
+            return $instance->remove();
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class QueueWorker {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function up($config)
+        {
+            /** @var \Native\Laravel\QueueWorker $instance */
+            return $instance->up($config);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function down($alias)
+        {
+            /** @var \Native\Laravel\QueueWorker $instance */
+            return $instance->down($alias);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertUp($callback)
+        {
+            /** @var \Native\Laravel\Fakes\QueueWorkerFake $instance */
+            return $instance->assertUp($callback);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertDown($alias)
+        {
+            /** @var \Native\Laravel\Fakes\QueueWorkerFake $instance */
+            return $instance->assertDown($alias);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class ChildProcess {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function get($alias = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->get($alias);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function all()
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->all();
+        }
+
+        /**
+         * 
+         *
+         * @param string|string[] $cmd
+         * @return \Native\Laravel\ChildProcess 
+         * @static 
+         */
+        public static function start($cmd, $alias, $cwd = null, $env = null, $persistent = false)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->start($cmd, $alias, $cwd, $env, $persistent);
+        }
+
+        /**
+         * 
+         *
+         * @param string|string[] $cmd
+         * @return \Native\Laravel\ChildProcess 
+         * @static 
+         */
+        public static function php($cmd, $alias, $env = null, $persistent = false, $iniSettings = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->php($cmd, $alias, $env, $persistent, $iniSettings);
+        }
+
+        /**
+         * 
+         *
+         * @param string|string[] $cmd
+         * @return \Native\Laravel\ChildProcess 
+         * @static 
+         */
+        public static function artisan($cmd, $alias, $env = null, $persistent = false, $iniSettings = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->artisan($cmd, $alias, $env, $persistent, $iniSettings);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function stop($alias = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->stop($alias);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function restart($alias = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->restart($alias);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function message($message, $alias = null)
+        {
+            /** @var \Native\Laravel\ChildProcess $instance */
+            return $instance->message($message, $alias);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $alias
+         * @static 
+         */
+        public static function assertGet($alias)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertGet($alias);
+        }
+
+        /**
+         * 
+         *
+         * @param \Closure(array|string $cmd, string $alias, ?string $cwd, ?array $env, bool $persistent):  bool  $callback
+         * @static 
+         */
+        public static function assertStarted($callback)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertStarted($callback);
+        }
+
+        /**
+         * 
+         *
+         * @param \Closure(array|string $cmd, string $alias, ?array $env, ?bool $persistent):  bool  $callback
+         * @static 
+         */
+        public static function assertPhp($callback)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertPhp($callback);
+        }
+
+        /**
+         * 
+         *
+         * @param \Closure(array|string $cmd, string $alias, ?array $env, ?bool $persistent):  bool  $callback
+         * @static 
+         */
+        public static function assertArtisan($callback)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertArtisan($callback);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $alias
+         * @static 
+         */
+        public static function assertStop($alias)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertStop($alias);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $alias
+         * @static 
+         */
+        public static function assertRestart($alias)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertRestart($alias);
+        }
+
+        /**
+         * 
+         *
+         * @param \Closure(string $message, string|null $alias):  bool  $callback
+         * @static 
+         */
+        public static function assertMessage($callback)
+        {
+            /** @var \Native\Laravel\Fakes\ChildProcessFake $instance */
+            return $instance->assertMessage($callback);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class PowerMonitor {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getSystemIdleState($threshold)
+        {
+            /** @var \Native\Laravel\PowerMonitor $instance */
+            return $instance->getSystemIdleState($threshold);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getSystemIdleTime()
+        {
+            /** @var \Native\Laravel\PowerMonitor $instance */
+            return $instance->getSystemIdleTime();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function getCurrentThermalState()
+        {
+            /** @var \Native\Laravel\PowerMonitor $instance */
+            return $instance->getCurrentThermalState();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function isOnBatteryPower()
+        {
+            /** @var \Native\Laravel\PowerMonitor $instance */
+            return $instance->isOnBatteryPower();
+        }
+
+        /**
+         * 
+         *
+         * @param int|\Closure(int):  bool  $key
+         * @static 
+         */
+        public static function assertGetSystemIdleState($key)
+        {
+            /** @var \Native\Laravel\Fakes\PowerMonitorFake $instance */
+            return $instance->assertGetSystemIdleState($key);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertGetSystemIdleStateCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\PowerMonitorFake $instance */
+            return $instance->assertGetSystemIdleStateCount($count);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertGetSystemIdleTimeCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\PowerMonitorFake $instance */
+            return $instance->assertGetSystemIdleTimeCount($count);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertGetCurrentThermalStateCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\PowerMonitorFake $instance */
+            return $instance->assertGetCurrentThermalStateCount($count);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertIsOnBatteryPowerCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\PowerMonitorFake $instance */
+            return $instance->assertIsOnBatteryPowerCount($count);
+        }
+
+            }
+    /**
+     * 
+     *
+     */
+    class GlobalShortcut {
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function key($key)
+        {
+            /** @var \Native\Laravel\GlobalShortcut $instance */
+            return $instance->key($key);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function event($event)
+        {
+            /** @var \Native\Laravel\GlobalShortcut $instance */
+            return $instance->event($event);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function register()
+        {
+            /** @var \Native\Laravel\GlobalShortcut $instance */
+            return $instance->register();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function unregister()
+        {
+            /** @var \Native\Laravel\GlobalShortcut $instance */
+            return $instance->unregister();
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $key
+         * @static 
+         */
+        public static function assertKey($key)
+        {
+            /** @var \Native\Laravel\Fakes\GlobalShortcutFake $instance */
+            return $instance->assertKey($key);
+        }
+
+        /**
+         * 
+         *
+         * @param string|\Closure(string):  bool  $event
+         * @static 
+         */
+        public static function assertEvent($event)
+        {
+            /** @var \Native\Laravel\Fakes\GlobalShortcutFake $instance */
+            return $instance->assertEvent($event);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertRegisteredCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\GlobalShortcutFake $instance */
+            return $instance->assertRegisteredCount($count);
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function assertUnregisteredCount($count)
+        {
+            /** @var \Native\Laravel\Fakes\GlobalShortcutFake $instance */
+            return $instance->assertUnregisteredCount($count);
         }
 
             }
@@ -27610,7 +28471,6 @@ namespace  {
     class Config extends \Illuminate\Support\Facades\Config {}
     class Context extends \Illuminate\Support\Facades\Context {}
     class Cookie extends \Illuminate\Support\Facades\Cookie {}
-    class Crypt extends \Illuminate\Support\Facades\Crypt {}
     class Date extends \Illuminate\Support\Facades\Date {}
     class DB extends \Illuminate\Support\Facades\DB {}
 
@@ -30090,7 +30950,7 @@ namespace  {
         /**
          * Set the columns to be selected.
          *
-         * @param array|mixed $columns
+         * @param mixed $columns
          * @return \Illuminate\Database\Eloquent\Builder<static> 
          * @static 
          */
@@ -30160,7 +31020,7 @@ namespace  {
         /**
          * Add a new select column to the query.
          *
-         * @param array|mixed $column
+         * @param mixed $column
          * @return \Illuminate\Database\Eloquent\Builder<static> 
          * @static 
          */
@@ -30508,7 +31368,7 @@ namespace  {
         /**
          * Add a raw where clause to the query.
          *
-         * @param string $sql
+         * @param \Illuminate\Contracts\Database\Query\Expression|string $sql
          * @param mixed $bindings
          * @param string $boolean
          * @return \Illuminate\Database\Eloquent\Builder<static> 
@@ -32003,7 +32863,7 @@ namespace  {
         /**
          * Get the count of the total records for the paginator.
          *
-         * @param array $columns
+         * @param array<string|\Illuminate\Contracts\Database\Query\Expression> $columns
          * @return int 
          * @static 
          */
@@ -32313,7 +33173,7 @@ namespace  {
         /**
          * Get all of the query builder's columns in a text-only array with all expressions evaluated.
          *
-         * @return array 
+         * @return list<string> 
          * @static 
          */
         public static function getColumns()
@@ -32338,7 +33198,7 @@ namespace  {
         /**
          * Get the current query value bindings in a flattened array.
          *
-         * @return array 
+         * @return list<mixed> 
          * @static 
          */
         public static function getBindings()
@@ -32350,7 +33210,16 @@ namespace  {
         /**
          * Get the raw array of bindings.
          *
-         * @return array 
+         * @return \Illuminate\Database\Query\array{ select: list<mixed>,
+         *      from: list<mixed>,
+         *      join: list<mixed>,
+         *      where: list<mixed>,
+         *      groupBy: list<mixed>,
+         *      having: list<mixed>,
+         *      order: list<mixed>,
+         *      union: list<mixed>,
+         *      unionOrder: list<mixed>,
+         * }
          * @static 
          */
         public static function getRawBindings()
@@ -32362,7 +33231,8 @@ namespace  {
         /**
          * Set the bindings on the query builder.
          *
-         * @param string $type
+         * @param list<mixed> $bindings
+         * @param "select"|"from"|"join"|"where"|"groupBy"|"having"|"order"|"union"|"unionOrder" $type
          * @return \Illuminate\Database\Eloquent\Builder<static> 
          * @throws \InvalidArgumentException
          * @static 
@@ -32377,7 +33247,7 @@ namespace  {
          * Add a binding to the query.
          *
          * @param mixed $value
-         * @param string $type
+         * @param "select"|"from"|"join"|"where"|"groupBy"|"having"|"order"|"union"|"unionOrder" $type
          * @return \Illuminate\Database\Eloquent\Builder<static> 
          * @throws \InvalidArgumentException
          * @static 
@@ -32404,6 +33274,7 @@ namespace  {
         /**
          * Merge an array of bindings into our bindings.
          *
+         * @param self $query
          * @return \Illuminate\Database\Eloquent\Builder<static> 
          * @static 
          */
@@ -32416,7 +33287,8 @@ namespace  {
         /**
          * Remove all of the expressions from a list of bindings.
          *
-         * @return array 
+         * @param array<mixed> $bindings
+         * @return list<mixed> 
          * @static 
          */
         public static function cleanBindings($bindings)
@@ -32845,10 +33717,10 @@ namespace  {
     class Lang extends \Illuminate\Support\Facades\Lang {}
     class Log extends \Illuminate\Support\Facades\Log {}
     class Mail extends \Illuminate\Support\Facades\Mail {}
-    class Notification extends \Illuminate\Support\Facades\Notification {}
+    class Notification extends \Native\Laravel\Facades\Notification {}
     class Number extends \Illuminate\Support\Number {}
     class Password extends \Illuminate\Support\Facades\Password {}
-    class Process extends \Illuminate\Support\Facades\Process {}
+    class Process extends \Native\Laravel\Facades\Process {}
     class Queue extends \Illuminate\Support\Facades\Queue {}
     class RateLimiter extends \Illuminate\Support\Facades\RateLimiter {}
     class Redirect extends \Illuminate\Support\Facades\Redirect {}
@@ -32870,6 +33742,20 @@ namespace  {
     class PDF extends \Barryvdh\DomPDF\Facade\Pdf {}
     class Pdf extends \Barryvdh\DomPDF\Facade\Pdf {}
     class Livewire extends \Livewire\Livewire {}
+    class Dock extends \Native\Laravel\Facades\Dock {}
+    class Menu extends \Native\Laravel\Facades\Menu {}
+    class Shell extends \Native\Laravel\Facades\Shell {}
+    class Screen extends \Native\Laravel\Facades\Screen {}
+    class System extends \Native\Laravel\Facades\System {}
+    class Window extends \Native\Laravel\Facades\Window {}
+    class MenuBar extends \Native\Laravel\Facades\MenuBar {}
+    class Settings extends \Native\Laravel\Facades\Settings {}
+    class Clipboard extends \Native\Laravel\Facades\Clipboard {}
+    class ContextMenu extends \Native\Laravel\Facades\ContextMenu {}
+    class QueueWorker extends \Native\Laravel\Facades\QueueWorker {}
+    class ChildProcess extends \Native\Laravel\Facades\ChildProcess {}
+    class PowerMonitor extends \Native\Laravel\Facades\PowerMonitor {}
+    class GlobalShortcut extends \Native\Laravel\Facades\GlobalShortcut {}
 }
 
 
