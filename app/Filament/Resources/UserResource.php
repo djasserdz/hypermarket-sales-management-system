@@ -37,11 +37,23 @@ class UserResource extends Resource
                     TextInput::make('email')
                         ->required()
                         ->email()
-                        ->unique(ignoreRecord: true),
+                        ->unique(ignoreRecord: true)
+                        ->rules([
+                            'regex:/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.fr|hotmail\.com|outlook\.com)$/'
+                        ])
+                        ->validationMessages([
+                            'regex' => 'Email must be in correct format like: xxxx@gmail.com or xxxx@yahoo.fr'
+                        ]),
 
                     TextInput::make('password')
                         ->password()
                         ->nullable()
+                         ->rules([
+                            'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{4,}$/'
+                        ])
+                        ->validationMessages([
+                            'regex' => 'Password must contain at least one letter, one number, one special character and be at least 4 characters long'
+                        ])
                         ->dehydrateStateUsing(fn($state) => !empty($state) ? bcrypt($state) : null)
                         ->dehydrated(fn($state) => filled($state)),
 
