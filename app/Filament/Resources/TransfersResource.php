@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use App\Models\Stock;
 
 class TransfersResource extends Resource
 {
@@ -65,8 +66,38 @@ class TransfersResource extends Resource
                     ->color("primary")
                     ->action(function (Transfers $record) {
                         $record->update([
-                            'status' => 'delivered',
+                            'status' => 'delevired',
                         ]);
+
+                        // Update stock levels
+                        $product_id = $record->product_id;
+                        $from_supermarket_id = $record->from_supermarket;
+                        $to_supermarket_id = $record->to_supermarket;
+                        $quantity = $record->quantity;
+
+                        // Decrement stock from source supermarket
+                        $sourceStock = Stock::where('supermarket_id', $from_supermarket_id)
+                            ->where('product_id', $product_id)
+                            ->first();
+                        if ($sourceStock) {
+                            $sourceStock->decrement('quantity', $quantity);
+                        }
+
+                        // Increment stock in destination supermarket
+                        $destinationStock = Stock::where('supermarket_id', $to_supermarket_id)
+                            ->where('product_id', $product_id)
+                            ->first();
+                        if ($destinationStock) {
+                            $destinationStock->increment('quantity', $quantity);
+                        } else {
+                            // If stock doesn't exist for the product in the destination supermarket, create it
+                            Stock::create([
+                                'supermarket_id' => $to_supermarket_id,
+                                'product_id' => $product_id,
+                                'quantity' => $quantity,
+                            ]);
+                        }
+
                         Notification::make()
                             ->title('Transfer Marked as Delivered')
                             ->success()
