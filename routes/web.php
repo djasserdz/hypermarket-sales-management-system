@@ -10,17 +10,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect("/","/admin/login");
 
-Route::get('/not', function () {
-    $user = User::find(1); // Target User
-
-    Notification::make()
-        ->title('New Message')
-        ->body('You have a new notification.')
-        ->sendToDatabase($user);
-    dd('send');
-});
 
