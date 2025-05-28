@@ -220,7 +220,7 @@
             <tr>
                 <td>
                     <h3>Total Revenue</h3>
-                    <p class="value">${{ number_format((float)$totalRevenue, 2) }}</p>
+                    <p class="value">DZD{{ number_format((float)$totalRevenue, 2) }}</p>
                 </td>
                 <td>
                     <h3>Total Products Sold</h3>
@@ -263,9 +263,9 @@
                     @if($isSupermarketReport || $isGeneralAdminReport)
                          <td>{{ $item['id'] ?? 'N/A' }}</td>
                     @endif
-                    <td class="text-right">${{ number_format((float)($item['price'] ?? 0), 2) }}</td>
+                    <td class="text-right">DZD{{ number_format((float)($item['price'] ?? 0), 2) }}</td>
                     <td class="text-right">{{ number_format((int)($item['total_quantity'] ?? ($item['quantity'] ?? 0) )) }}</td>
-                    <td class="text-right">${{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
+                    <td class="text-right">DZD{{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -285,7 +285,7 @@
             <div class="supermarket-breakdown">
                 <h3>
                     {{ $supermarketData['supermarket'] ?? 'Unknown Supermarket' }} - 
-                    Total: ${{ number_format((float)($supermarketData['total_money'] ?? 0), 2) }}
+                    Total: DZD{{ number_format((float)($supermarketData['total_money'] ?? 0), 2) }}
                 </h3>
                 @if(isset($supermarketData['report']) && count($supermarketData['report']) > 0)
                 <table>
@@ -303,9 +303,9 @@
                         <tr>
                             <td>{{ $item['name'] ?? 'N/A' }}</td>
                             <td>{{ $item['id'] ?? 'N/A' }}</td>
-                            <td class="text-right">${{ number_format((float)($item['price'] ?? 0), 2) }}</td>
+                            <td class="text-right">DZD{{ number_format((float)($item['price'] ?? 0), 2) }}</td>
                             <td class="text-right">{{ number_format((int)($item['total_quantity'] ?? ($item['quantity'] ?? 0))) }}</td>
-                            <td class="text-right">${{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
+                            <td class="text-right">DZD{{ number_format((float)($item['total_price'] ?? 0), 2) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

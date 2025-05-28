@@ -68,7 +68,7 @@
     <div class="email-container">
         <h1>Daily Sales Report for {{ $data['supermarket'] ?? 'Unknown Supermarket' }}</h1>
         <p><strong>Date:</strong> {{ $data['date'] ?? now()->toDateString() }}</p>
-        <p><strong>Total Revenue:</strong> ${{ number_format($data['total_money'] ?? 0, 2) }}</p>
+        <p><strong>Total Revenue:</strong> DZD{{ number_format($data['total_money'] ?? 0, 2) }}</p>
         <p><strong>Total Products Sold:</strong> {{ $data['total_products_sold'] ?? 0 }}</p>
 
         <h2>Products Sold Summary</h2>
@@ -86,9 +86,9 @@
                     @forelse ($data['report'] as $item)
                         <tr>
                             <td>{{ $item->name ?? 'N/A' }}</td>
-                            <td>${{ number_format($item->price ?? 0, 2) }}</td>
+                            <td>DZD{{ number_format($item->price ?? 0, 2) }}</td>
                             <td>{{ $item->total_quantity ?? 0 }}</td>
-                            <td>${{ number_format($item->total_price ?? 0, 2) }}</td>
+                            <td>DZD{{ number_format($item->total_price ?? 0, 2) }}</td>
                         </tr>
                     @empty
                         <tr>

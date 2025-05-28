@@ -65,7 +65,7 @@ class SaleReportResource extends Resource
                     ->getStateUsing(function (SaleReport $record): string {
                         $reportContent = self::getReportContent($record);
                         if ($reportContent && isset($reportContent['total_money'])) {
-                            return '$' . number_format($reportContent['total_money'], 2);
+                            return 'DZD' . number_format($reportContent['total_money'], 2);
                         }
                         return 'N/A';
                     })

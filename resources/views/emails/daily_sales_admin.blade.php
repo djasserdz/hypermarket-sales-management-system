@@ -97,8 +97,8 @@
 
         <div class="summary-totals">
             <h2>Overall Summary</h2>
-            <p>Total Revenue (All Supermarkets): ${{ number_format($data['total_money'] ?? 0, 2) }}</p>
-            <p>Total Products Sold (All Supermarkets): {{ $data['total_products_sold'] ?? 0 }}</p>
+            <p>Total Revenue (All Supermarkets): DZD{{ number_format($data['total_money'] ?? 0, 2) }}</p>
+            <p>Total Products Sold (All Supermarkets): {{ number_format($data['total_products_sold'] ?? 0) }}</p>
         </div>
 
         <h2>Global Product Sales Summary</h2>
@@ -116,9 +116,9 @@
                     @forelse ($data['all_products'] as $item)
                         <tr>
                             <td>{{ $item->name ?? 'N/A' }}</td>
-                            <td>${{ number_format($item->price ?? 0, 2) }}</td>
+                            <td>DZD{{ number_format($item->price ?? 0, 2) }}</td>
                             <td>{{ $item->total_quantity ?? 0 }}</td>
-                            <td>${{ number_format($item->total_price ?? 0, 2) }}</td>
+                            <td>DZD{{ number_format($item->total_price ?? 0, 2) }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -134,43 +134,68 @@
         </table>
 
         <h2>Sales Breakdown by Supermarket</h2>
-        @if (!empty($data['supermarkets_breakdown']) && is_iterable($data['supermarkets_breakdown']))
-            @foreach ($data['supermarkets_breakdown'] as $supermarketData)
+        @if(isset($data['supermarkets_breakdown']) && count($data['supermarkets_breakdown']) > 0)
+            <h2>Supermarket Breakdown</h2>
+            @foreach($data['supermarkets_breakdown'] as $supermarket_data)
                 <div class="supermarket-card">
-                    <h3>{{ $supermarketData['supermarket'] ?? 'Unknown Supermarket' }}</h3>
-                    <p><strong>Total Revenue:</strong> ${{ number_format($supermarketData['total_money'] ?? 0, 2) }}</p>
-                    @if (!empty($supermarketData['report']) && is_iterable($supermarketData['report']))
+                    <h3>{{ $supermarket_data['supermarket'] ?? 'Unknown Supermarket' }}</h3>
+                    <p>Total Revenue: DZD{{ number_format($supermarket_data['total_money'] ?? 0, 2) }}</p>
+                    <p>Products Sold: {{ count($supermarket_data['report'] ?? []) }}</p>
+
+                    @if(count($supermarket_data['report'] ?? []) > 0)
                         <table>
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th>Unit Price</th>
-                                    <th>Quantity Sold</th>
-                                    <th>Revenue</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($supermarketData['report'] as $item)
+                                @foreach($supermarket_data['report'] as $item)
                                     <tr>
-                                        <td>{{ $item->name ?? 'N/A' }}</td>
-                                        <td>${{ number_format($item->price ?? 0, 2) }}</td>
-                                        <td>{{ $item->total_quantity ?? 0 }}</td>
-                                        <td>${{ number_format($item->total_price ?? 0, 2) }}</td>
+                                        <td>{{ is_object($item) ? $item->name : ($item['name'] ?? 'N/A') }}</td>
+                                        <td>DZD{{ number_format(is_object($item) ? $item->price : ($item['price'] ?? 0), 2) }}</td>
+                                        <td>{{ number_format(is_object($item) ? $item->total_quantity : ($item['total_quantity'] ?? 0)) }}</td>
+                                        <td>DZD{{ number_format(is_object($item) ? $item->total_price : ($item['total_price'] ?? 0), 2) }}</td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" style="text-align: center;">No sales data for this supermarket.</td>
-                                    </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     @else
-                        <p>No detailed sales report available for this supermarket.</p>
+                        <p>No sales recorded for this supermarket today.</p>
                     @endif
                 </div>
             @endforeach
         @else
-            <p>No supermarket breakdown data available.</p>
+            <p>No supermarket data available for today.</p>
+        @endif
+
+        @if(isset($data['all_products']) && count($data['all_products']) > 0)
+            <h2>All Products Sold (Combined)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Unit Price</th>
+                        <th>Total Quantity</th>
+                        <th>Total Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($data['all_products'] as $item)
+                        <tr>
+                            <td>{{ $item['name'] ?? 'N/A' }}</td>
+                            <td>DZD{{ number_format($item['price'] ?? 0, 2) }}</td>
+                            <td>{{ number_format($item['total_quantity'] ?? 0) }}</td>
+                            <td>DZD{{ number_format($item['total_price'] ?? 0, 2) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @else
+            <p>No products were sold across all supermarkets today.</p>
         @endif
 
         <div class="footer">

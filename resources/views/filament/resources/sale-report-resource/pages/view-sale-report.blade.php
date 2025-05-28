@@ -35,14 +35,12 @@
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-200 dark:border-gray-700">
                         <div class="flex items-center">
                             <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                                </svg>
+                                
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
                                 <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                                    ${{ number_format($reportContent['total_money'] ?? 0, 2) }}
+                                    DZD{{ number_format($reportContent['total_money'] ?? 0, 2) }}
                                 </p>
                             </div>
                         </div>
@@ -103,13 +101,13 @@
                                             {{ $item['name'] ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            ${{ number_format($item['price'] ?? 0, 2) }}
+                                            DZD{{ number_format($item['price'] ?? 0, 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-right">
                                             {{ number_format($item['total_quantity'] ?? 0) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-semibold text-right">
-                                            ${{ number_format($item['total_price'] ?? 0, 2) }}
+                                            DZD{{ number_format($item['total_price'] ?? 0, 2) }}
                                         </td>
                                     </tr>
                                 @empty
@@ -137,12 +135,12 @@
                                         {{ $supermarket_data['supermarket'] ?? 'Unknown Supermarket' }}
                                     </h3>
                                     <span class="text-white font-bold text-lg">
-                                        ${{ number_format($supermarket_data['total_money'] ?? 0, 2) }}
+                                        DZD{{ number_format($supermarket_data['total_money'] ?? 0, 2) }}
                                     </span>
                                 </div>
                             </div>
                             
-                            <div class="p-6">
+                            <div class="{{ count($supermarket_data['report'] ?? []) > 0 ? 'p-6' : 'p-3' }}">
                                 @if(count($supermarket_data['report'] ?? []) > 0)
                                     <div class="overflow-x-auto">
                                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -161,13 +159,13 @@
                                                             {{ is_object($item) ? $item->name : ($item['name'] ?? 'N/A') }}
                                                         </td>
                                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
-                                                            ${{ number_format(is_object($item) ? $item->price : ($item['price'] ?? 0), 2) }}
+                                                            DZD{{ number_format(is_object($item) ? $item->price : ($item['price'] ?? 0), 2) }}
                                                         </td>
                                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 text-right">
                                                             {{ number_format(is_object($item) ? $item->total_quantity : ($item['total_quantity'] ?? 0)) }}
                                                         </td>
                                                         <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 font-semibold text-right">
-                                                            ${{ number_format(is_object($item) ? $item->total_price : ($item['total_price'] ?? 0), 2) }}
+                                                            DZD{{ number_format(is_object($item) ? $item->total_price : ($item['total_price'] ?? 0), 2) }}
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -175,11 +173,8 @@
                                         </table>
                                     </div>
                                 @else
-                                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <p class="mt-2">No sales recorded for this supermarket today.</p>
+                                    <div class="text-center text-gray-500 dark:text-gray-400">
+                                        <p class="text-sm">No sales recorded for this supermarket today.</p>
                                     </div>
                                 @endif
                             </div>
@@ -199,7 +194,7 @@
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
                                 <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-                                    ${{ number_format($reportContent['total_money'] ?? 0, 2) }}
+                                    DZD{{ number_format($reportContent['total_money'] ?? 0, 2) }}
                                 </p>
                             </div>
                         </div>
@@ -248,13 +243,13 @@
                                             {{ is_object($item) ? $item->name : ($item['name'] ?? 'N/A') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                            ${{ number_format(is_object($item) ? ($item->price ?? 0) : ($item['price'] ?? 0), 2) }}
+                                            DZD{{ number_format(is_object($item) ? ($item->price ?? 0) : ($item['price'] ?? 0), 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 text-right">
                                             {{ number_format(is_object($item) ? $item->total_quantity : ($item['total_quantity'] ?? 0)) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100 font-semibold text-right">
-                                            ${{ number_format(is_object($item) ? $item->total_price : ($item['total_price'] ?? 0), 2) }}
+                                            DZD{{ number_format(is_object($item) ? $item->total_price : ($item['total_price'] ?? 0), 2) }}
                                         </td>
                                     </tr>
                                 @empty

@@ -48,8 +48,8 @@
                             <tr class="border-t border-gray-700">
                                 <td class="px-4 py-3 text-gray-300">{{ $product->name }}</td>
                                 <td class="px-4 py-3 text-center text-gray-300">{{ $product->pivot->quantity }}</td>
-                                <td class="px-4 py-3 text-right text-gray-300">${{ number_format($product->price, 2) }}</td>
-                                <td class="px-4 py-3 font-medium text-right text-gray-300">${{ number_format($product->price * $product->pivot->quantity, 2) }}</td>
+                                <td class="px-4 py-3 text-right text-gray-300">DZD{{ number_format($product->price, 2) }}</td>
+                                <td class="px-4 py-3 font-medium text-right text-gray-300">DZD{{ number_format($product->price * $product->pivot->quantity, 2) }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -61,7 +61,7 @@
                         <tr>
                             <td colspan="3" class="px-4 py-3 text-right font-medium text-gray-300">Total:</td>
                             <td class="px-4 py-3 text-right font-bold text-amber-400">
-                                ${{ number_format($sale->products->sum(function($product) {
+                                DZD{{ number_format($sale->products->sum(function($product) {
                                     return $product->price * $product->pivot->quantity;
                                 }), 2) }}
                             </td>

@@ -58,7 +58,7 @@ class SalesSummary extends BaseWidget
         }
 
         return [
-            Card::make('Total Sales Today', '$' . number_format($todaySales, 2))
+            Card::make('Total Sales Today', 'DZD' . number_format($todaySales, 2))
             ->color('success')
             ->chart($salesAmountChartLast7Days)
             ->description('In the last 7 days')
