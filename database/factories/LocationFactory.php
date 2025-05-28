@@ -19,8 +19,7 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'street_address' => fake()->streetAddress(),
-            'city' => fake()->city(),
+            'street_name' => fake()->streetAddress(),
             'state' => fake()->stateAbbr(),
             'supermarket_id' => Supermarket::factory(),
             'latitude' => fake()->latitude(),

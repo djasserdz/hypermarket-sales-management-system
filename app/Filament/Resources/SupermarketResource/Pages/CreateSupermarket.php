@@ -6,6 +6,7 @@ namespace App\Filament\Resources\SupermarketResource\Pages;
 
 use App\Filament\Resources\SupermarketResource;
 use App\Models\location;
+use App\Models\Location as ModelsLocation;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
@@ -35,7 +36,7 @@ class CreateSupermarket extends CreateRecord
     protected function afterCreate(): void
     {
 
-    location::create([
+    ModelsLocation::create([
             'supermarket_id' => $this->record->id,
             'street_name' => $this->data['location']['street_name'],
             'state' => $this->data['location']['state'],
