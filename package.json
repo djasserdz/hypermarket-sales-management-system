@@ -1,16 +1,62 @@
 {
-    "private": true,
-    "type": "module",
-    "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+  "name": "filament-electron-app",
+  "version": "1.0.0",
+  "description": "Desktop wrapper for Laravel Filament admin UI",
+  "author": "DOMination Team",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^29.4.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.yourcompany.filamentapp",
+    "productName": "hypermarket-app",
+    "directories": {
+      "output": "dist"
     },
-    "devDependencies": {
-        "@tailwindcss/vite": "^4.0.0",
-        "axios": "^1.7.4",
-        "concurrently": "^9.0.1",
-        "laravel-vite-plugin": "^1.2.0",
-        "tailwindcss": "^4.0.0",
-        "vite": "^6.0.11"
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/hepermaretLogo.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "build/hepermaretLogo.ico",
+      "category": "Utility",
+      "maintainer": "DOMination Team",
+      "synopsis": "Supermarket management system"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.icns"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "installerSidebar": "build\\sidebar.bmp",
+      "uninstallerSidebar": "build\\sidebar.bmp",
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
+  },
+  "keywords": [],
+  "license": "ISC"
 }
