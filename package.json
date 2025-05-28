@@ -1,4 +1,5 @@
 {
+    
   "name": "filament-electron-app",
   "version": "1.0.0",
   "description": "Desktop wrapper for Laravel Filament admin UI",
