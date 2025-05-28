@@ -16,7 +16,7 @@ function createWindow() {
     }
   });
 
-win.loadURL('http://127.0.0.1:8000');
+win.loadURL('http://127.0.0.1:8000'); //hicham bdl URL hna ta3 domain
 }
 app.whenReady().then(() => {
   createWindow();
